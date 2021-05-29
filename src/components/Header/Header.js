@@ -1,17 +1,22 @@
+import M from 'materialize-css';
+import { Button } from 'react-materialize';
+import { Link, withRouter } from "react-router-dom"
+const getModal = (name) => (M.Modal.getInstance(document.querySelector(name)))
+
 const Header = (props) => {
     return (
         <nav className="light-blue lighten-1" role="navigation">
-            <div className="nav-wrapper container"><a id="logo-container" href="#" className="brand-logo">Logo</a>
+            <div className="nav-wrapper container"><Link id="logo-container" to="/" className="brand-logo">ARAI</Link>
                 <ul className="right hide-on-med-and-down">
-                    <li><a href="#">Navbar Link</a></li>
+                    <li><Button waves="light" flat className="white-text" onClick={() => getModal("#questions").open()}>問題集</Button></li>
                 </ul>
 
                 <ul id="nav-mobile" className="sidenav">
-                    <li><a href="#">Navbar Link</a></li>
+                    <li><Button waves="light" flat className="white-text" onClick={() => getModal("#questions").open()}>問題集</Button></li>
                 </ul>
-                <a href="#" data-target="nav-mobile" className="sidenav-trigger"><i className="material-icons">menu</i></a>
+                <Link onClick={() => getModal("#questions").open()} flat data-target="nav-mobile" className="sidenav-trigger white-text"><i className="material-icons">menu</i></Link>
             </div>
         </nav>
     )
 }
-export default Header
+export default withRouter(Header)
