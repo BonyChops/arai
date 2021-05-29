@@ -2,7 +2,7 @@ import M from 'materialize-css';
 import { Button, Card, Row, Col, Container, Section, TextInput, Tab, Tabs, Textarea, Toast, Modal, Icon, Switch } from 'react-materialize';
 import React from "react";
 import yaml from "js-yaml";
-import sampleYaml from "../resources/sample.yml";
+import sampleYaml from "../../resources/sample.yml";
 import fetch from "node-fetch";
 import { isMobile } from "react-device-detect";
 
