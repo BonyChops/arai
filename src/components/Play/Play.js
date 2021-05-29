@@ -252,6 +252,7 @@ class Play extends React.Component {
                                                 id={`answer_${k}`}
                                                 value={answer.title}
                                                 label={answer.title}
+                                                disabled={currentQuestion.answered}
                                             />{currentQuestion.answered && answer.answer ? <Icon>check</Icon> : null}
                                         </label>
                                     </p>
@@ -325,7 +326,8 @@ class Play extends React.Component {
                             </Col>
                             <Col s={2} className="right-align">
                                 {this.state.currentIndex < this.state.questions.length ? <Button onClick={() => this.checkAnswer(currentQuestion)} className={(currentQuestion.answered ? "light-blue" : "orange") + " right-align"}>
-                                    {currentQuestion.answered ? (">") : "Check"}
+                                    {/* {currentQuestion.answered ? (">") : "Check"} */}
+                                    {">"}
                                 </Button> : null}
                             </Col>
                         </Row>
