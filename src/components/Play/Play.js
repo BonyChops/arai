@@ -287,13 +287,13 @@ class Play extends React.Component {
                                         <td className={question.correct ? "green-text" : "red-text"}>
                                             <Icon left>{question.correct ? "check" : "close"}</Icon> <Link onClick={() => this.setState({ currentIndex: k })}>第{k + 1}問 </Link>
                                         </td>
-                                        <td>
+                                        <td className={question.correct ? "green-text" : "red-text"}>
                                             {
                                                 question.answers.length <= 1 ? question.answers[0].insert :
                                                     question.answers.filter(answer => answer.selected).map(answer => answer.title).join(", ")
                                             }
                                         </td>
-                                        <td className={question.correct ? "green-text" : "red-text"}>
+                                        <td>
                                             {
                                                 question.answers.length <= 1 ? question.answers[0].title :
                                                     question.answers.filter(answer => answer.answer).map(answer => answer.title).join(", ")
