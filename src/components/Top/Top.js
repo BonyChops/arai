@@ -1,5 +1,9 @@
 import M from "materialize-css"
-import { Button, Container, Row, Section } from "react-materialize"
+import { Button, Col, Container, Row, Section } from "react-materialize"
+import Image1 from "../../resources/2.png";
+import Image2 from "../../resources/1.png";
+import Image3 from "../../resources/0.png";
+import GithubIcon from "../../resources/github.png"
 
 const Top = (props) => {
     return (
@@ -12,7 +16,19 @@ const Top = (props) => {
                 <Row className="center">
                     <Button onClick={() => M.Modal.getInstance(document.querySelector('#questions')).open()} large waves="light" className="orange">Get Started</Button>
                 </Row>
-                <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+                <h6 className="center"><img src={GithubIcon} style={{height: "16px"}}/><a href="https://github.com/BonyChops/arai" target="_blank" rel="noopener noreferrer">BonyChops/arai</a></h6>
+                <br />
+                <Row>
+                    <Col s={4} className="center">
+                        <img src={Image1} style={{ width: "80%" }} />
+                    </Col>
+                    <Col s={4} className="center">
+                        <img src={Image2} style={{ width: "80%" }} />
+                    </Col>
+                    <Col s={4} className="center">
+                        <img src={Image3} style={{ width: "80%" }} />
+                    </Col>
+                </Row>
             </Container>
         </Section>
     )
