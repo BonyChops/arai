@@ -3,21 +3,20 @@ import { Button, Card, Col, Container, Icon, Modal, Row, Section } from "react-m
 import M, { Toast } from "materialize-css"
 import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
-import { useState } from "react/cjs/react.development";
+import { useState } from "react";
 
-
-const getModal = (name) => (M.Modal.getInstance(document.querySelector(name)))
-
-const requestQuestion = (props, questions) => {
-    getModal("#questions").close();
-    if (questions.length == 0)
-        getModal("#dataWarn").open();
-    const id = props.generateQuestion();
-    console.log(props.history)
-    props.history.push(`/q/${id}`);
-}
 const Questions = (props) => {
-    const [deleteTarget, setDeleteTarget] = useState({});
+    const getModal = (name) => (M.Modal.getInstance(document.querySelector(name)))
+
+    const requestQuestion = (props, questions) => {
+        getModal("#questions").close();
+        if (questions.length == 0)
+            getModal("#dataWarn").open();
+        const id = props.generateQuestion();
+        console.log(props.history)
+        props.history.push(`/q/${id}`);
+    }
+    const [deleteTarget, setDeleteTarget] = useState(false);
     console.log(props.state)
     const questions = Object.keys(props.state).filter(key => (/^question_(.*)$/).test(key) && props.state[key] !== undefined).map(key => (props.state[key]));
     return (

@@ -6,7 +6,7 @@ import sampleYaml from "../../resources/sample.yml";
 import fetch from "node-fetch";
 import { isMobile } from "react-device-detect";
 import NotFound from './parts/NotFound';
-const getModal = (name) => (M.Modal.getInstance(document.querySelector(name)))
+
 
 class Dashboard extends React.Component {
     constructor(props) {
@@ -25,8 +25,6 @@ class Dashboard extends React.Component {
         }
 
     }
-
-
 
     componentDidMount = async () => {
         if (this.props.state === undefined) {
