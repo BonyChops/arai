@@ -9,6 +9,8 @@ import Top from './components/Top/Top';
 import Questions from './components/Questions/Questions';
 import Play from './components/Play/Play';
 import moment from "moment"
+import NotFound from './components/NotFound/NotFound';
+import ModalCollection from './components/ModalCollection/ModalCollection';
 const merge = require('deepmerge');
 
 class App extends React.Component {
@@ -65,6 +67,13 @@ class App extends React.Component {
           <Header />
           <Switch>
             <Route exact path="/" render={() => <Top />} />
+            <Route exact path="/q/:id/play"
+              render={(props) => <Play
+                key={props.match.params.id}
+                state={this.state[`question_${props.match.params.id}`]}
+                accessor={(state) => this.accessor(state, props.match.params.id)}
+                baseAccessor={this.setState}
+              />} />
             <Route exact path="/q/:id"
               render={(props) => <Dashboard
                 key={props.match.params.id}
@@ -72,17 +81,12 @@ class App extends React.Component {
                 accessor={(state) => this.accessor(state, props.match.params.id)}
                 baseAccessor={this.setState}
               />} />
-              <Route exact path="/q/:id/play"
-              render={(props) => <Play
-                key={props.match.params.id}
-                state={this.state[`question_${props.match.params.id}`]}
-                accessor={(state) => this.accessor(state, props.match.params.id)}
-                baseAccessor={this.setState}
-              />} />
+            <Route render={() => <NotFound />} />
           </Switch>
           <Questions generateQuestion={this.generateQuestion} state={this.state} baseAccessor={(state) => this.setState(state)} />
         </Router>
-        <Footer />
+        <ModalCollection/>
+       {/*  <Footer /> */}
       </div >
     )
   };

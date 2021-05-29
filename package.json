@@ -2,7 +2,7 @@
   "name": "matelialize-react-template",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://bonychops.github.io/ichimon-itto/",
+  "homepage": "https://bonychops.github.io/arai/",
   "dependencies": {
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.7",

@@ -5,7 +5,8 @@ import yaml from "js-yaml";
 import sampleYaml from "../../resources/sample.yml";
 import fetch from "node-fetch";
 import { isMobile } from "react-device-detect";
-import NotFound from './parts/NotFound';
+import NotFound from '../NotFound/NotFound';
+import { withRouter } from 'react-router';
 
 
 class Dashboard extends React.Component {
@@ -86,11 +87,20 @@ class Dashboard extends React.Component {
             const spaceCount = 4;
             const substitution = Array(spaceCount + 1).join(' ');
             const newText = currentText.substring(0, start) + substitution + currentText.substring(end, currentText.length);
-            (localChange ? this.setState : this.props.accessor)({
-                [title]: newText,
-            }, () => {
-                textareaElement.setSelectionRange(start + spaceCount, start + spaceCount);
-            });
+            if (localChange) {
+                this.setState({
+                    [title]: newText,
+                }, () => {
+                    textareaElement.setSelectionRange(start + spaceCount, start + spaceCount);
+                });
+            } else {
+                this.props.accessor({
+                    [title]: newText,
+                }, () => {
+                    textareaElement.setSelectionRange(start + spaceCount, start + spaceCount);
+                });
+            }
+
         }
     }
 
@@ -267,12 +277,12 @@ class Dashboard extends React.Component {
                             <TextInput s={12} label="Description" validate id="description" value={this.props.state.description} onChange={(e) => this.handleChange(e, "description")} />
                         </Col>
                         <Col s={12} m={6} >
-                            <Button large waves="light" onClick={() => M.Modal.getInstance(document.querySelector('#alert')).open()}><Icon left>play_arrow</Icon>開始</Button>
+                            <Button large waves="light" onClick={() => this.props.history.push(`/q/${this.props.state.id}/play`)}><Icon left>play_arrow</Icon>開始</Button>
                         </Col>
 
                     </Row>
 
-                    <Button flat waves="light" onClick={() => this.handleChangeToggle( "showMore", true)}><Icon left>{!this.state.showMore ? "expand_more" : "expand_less"}</Icon>詳細設定</Button>
+                    <Button flat waves="light" onClick={() => this.handleChangeToggle("showMore", true)}><Icon left>{!this.state.showMore ? "expand_more" : "expand_less"}</Icon>詳細設定</Button>
                     {this.state.showMore ? <Row><br />
                         <SwitchTemp
                             id="soptions-switch"
@@ -299,7 +309,7 @@ class Dashboard extends React.Component {
                                 value={this.state.yamlBuffer}
                                 onChange={this.tryEditYaml}
                                 onBlur={(e) => this.tryEditYaml(e, true)}
-                                onKeyDown={(e) => this.handleKeyDown(e, "yamlBuffer")}
+                                onKeyDown={(e) => this.handleKeyDown(e, "yamlBuffer", true)}
                             />
                         </Tab>
                         <Tab title="構成ファイル(JSON)" >
@@ -335,16 +345,10 @@ class Dashboard extends React.Component {
                         </Tab> */}
                         <Tab title="GUI編集(開発中)" disabled>Test 2</Tab>
                     </Tabs>
-                    <Modal
-                        id='alert'
-                        header='問題が作成されていません'
-                        bottomSheet={isMobile}>
-                        問題を作成してください
-                    </Modal>
                 </Container>}
             </Section>
         )
     }
 }
 
-export default Dashboard;
+export default withRouter(Dashboard);

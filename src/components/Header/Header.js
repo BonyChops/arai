@@ -6,7 +6,7 @@ const getModal = (name) => (M.Modal.getInstance(document.querySelector(name)))
 const Header = (props) => {
     return (
         <nav className="light-blue lighten-1" role="navigation">
-            <div className="nav-wrapper container"><Link id="logo-container" to="/" className="brand-logo">ARAI</Link>
+            <div className="nav-wrapper container"><Link id="logo-container" /* to="/" */ className="brand-logo">ARAI</Link>
                 <ul className="right hide-on-med-and-down">
                     <li><Button waves="light" flat className="white-text" onClick={() => getModal("#questions").open()}>問題集</Button></li>
                 </ul>

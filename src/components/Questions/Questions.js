@@ -34,10 +34,10 @@ const Questions = (props) => {
                 bottomSheet={isMobile}>
                 <Row>
                     {questions.map((question, k) => (
-                        <Col key={k} m={4} s={6}>
+                        <Col key={k} m={4} s={12}>
                             <Card
                                 actions={[
-                                    <Link key="play" to={`/q/${question.id}`} onClick={() => getModal("#questions").close()}><Icon>play_arrow</Icon></Link>,
+                                    <Link key="play" to={`/q/${question.id}/play`} onClick={() => getModal("#questions").close()}><Icon>play_arrow</Icon></Link>,
                                     <Link key="edit" to={`/q/${question.id}`} onClick={() => getModal("#questions").close()}><Icon>edit</Icon></Link>,
                                     <Link key="delete" onClick={() => {
                                         setDeleteTarget(question);
@@ -69,6 +69,7 @@ const Questions = (props) => {
             <Modal
                 id='deleteWarn'
                 header='問題を消します'
+                bottomSheet={isMobile}
                 actions={[
                     <Button flat waves="light" onClick={() => getModal("#deleteWarn").close()}>キャンセル</Button>,
                     <Button flat waves="light" className="red-text" onClick={() => {
@@ -81,20 +82,19 @@ const Questions = (props) => {
                 ]}
                 bottomSheet={isMobile}>
                 <Row>
-                    以下の問題を消します．本当によろしいですか？
-                   <Col m={4} s={6}>
+                    以下の問題を消します．本当によろしいですか？<br />
+                   <Col m={6} s={12}>
                         <Card
                             title={deleteTarget.title}
                         >{deleteTarget.description}</Card>
                     </Col>
                 </Row>
-
             </Modal>
             <Modal
                 id='dataWarn'
                 header='データの取扱に関する注意'
                 bottomSheet={isMobile}>
-                このWebアプリでは，ユーザーが作成した問題をクラウドではなくブラウザに保存します(localStorage)．<span className="red-text" >このWebアプリはまだベータ版です．</span>データが飛びやすいので必ず自身でバックアップを取ってください．
+                このWebアプリでは，ユーザーが作成した問題をクラウドではなくブラウザに保存します(localStorage)．ユーザーが作成したクイズがサーバーに送られることは(現時点では)ありません．<br /><span className="red-text" >このWebアプリはまだベータ版です．</span>データが飛びやすいので必ず自身でバックアップを取ってください．<br />当Web AppではGoogle Analyticsを使用しています．
             </Modal>
         </div>
     )

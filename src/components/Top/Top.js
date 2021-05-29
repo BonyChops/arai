@@ -7,7 +7,7 @@ const Top = (props) => {
             <Container>
                 <h1 className="header center orange-text">ARAI</h1>
                 <Row className="center">
-                    <h5 className="header col s12 light">反復学習で圧倒的成長💪</h5>
+                    <h5 className="header col s12 light">Artificially Randomized Arrangements of Issues</h5>
                 </Row>
                 <Row className="center">
                     <Button onClick={() => M.Modal.getInstance(document.querySelector('#questions')).open()} large waves="light" className="orange">Get Started</Button>

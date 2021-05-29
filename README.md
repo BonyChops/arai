@@ -1,5 +1,5 @@
-# ichimon-itto
-Simple quiz app  
+# ARAI
+Artificially Randomized Arrangements of Issues. Simple quiz app.  
 https://bonychops.github.io/ichimon-itto/
 
 # Sample Yaml Format
