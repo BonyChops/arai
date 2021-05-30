@@ -64,7 +64,9 @@ class Play extends React.Component {
         const questions = props.state.questions.slice()
         this.state = {
             questions: (props.state.shuffleQuestions ? this.shuffle(questions) : questions).map(question => ({
-                answers: (props.state.shuffleOptions ? this.shuffle(question.answers) : question.answers).map((option, k) => ((option.selected = false, option.key = k), option)),
+                answers: (props.state.shuffleOptions ? this.shuffle(question.answers) : question.answers)
+                    .map((option, k) => ((option.selected = false, option.key = k), option))
+                    .filter(option => !this.props.state.hardMode || option.answer),
                 title: question.title,
                 answered: false,
                 correct: false,
@@ -88,10 +90,13 @@ class Play extends React.Component {
     }
 
     regenerateQuiz = (onlyFailed = false) => {
-        const questions = this.state.questions.filter(question => !onlyFailed || !question.correct).slice()
+        const questions = JSON.parse(JSON.stringify(this.state.questions.filter(question => !onlyFailed || !question.correct)))
+        console.log("answer: ", this.props.state.hardMode);
         this.setState({
             questions: (this.props.state.shuffleQuestions ? this.shuffle(questions) : questions).map(question => ({
-                answers: (this.props.state.shuffleOptions ? this.shuffle(question.answers) : question.answers).map((option, k) => (((option.selected = false, option.key = k), option.insert = ""), option)),
+                answers: (this.props.state.shuffleOptions ? this.shuffle(question.answers) : question.answers)
+                    .map((option, k) => (((option.selected = false, option.key = k), option.insert = ""), option))
+                    .filter(option => !this.props.state.hardMode || option.answer),
                 title: question.title,
                 answered: false,
                 correct: false,
@@ -305,9 +310,9 @@ class Play extends React.Component {
                             <br /><br />
                             <Row className="right-align">
                                 <Button className="light-blue" onClick={() => {
-                                    if (this.state.questions.filter(question => question.correct).length === this.state.questions.length){
-                                        M.toast({html: "1つも間違えてないでしょw"})
-                                    }else{
+                                    if (this.state.questions.filter(question => question.correct).length === this.state.questions.length) {
+                                        M.toast({ html: "1つも間違えてないでしょw" })
+                                    } else {
                                         getModal('#retryFailedQuiz').open();
                                     }
                                 }} style={{ marginRight: "25px" }}>間違えた問題だけやり直す</Button>

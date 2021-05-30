@@ -253,6 +253,7 @@ class Dashboard extends React.Component {
         delete object.jsonEditable;
         delete object.showMore;
         delete object.id;
+        //delete object.hardMode;
     }
 
 
@@ -299,6 +300,14 @@ class Dashboard extends React.Component {
                             onChange={(e) => this.handleChangeBool(e, "shuffleQuestions")}
                             onLabel=""
                             title="出題順を入れ替える"
+                        />
+                        <SwitchTemp
+                            id="hardmode-switch"
+                            offLabel=""
+                            checked={this.props.state.hardMode}
+                            onChange={(e) => this.handleChangeBool(e, "hardMode")}
+                            onLabel=""
+                            title="ハードモード"
                         />
                     </Row> : null}
                     <br /><br />

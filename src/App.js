@@ -54,7 +54,8 @@ class App extends React.Component {
         id,
         questions: [],
         shuffleOptions: false,
-        shuffleQuestions: false
+        shuffleQuestions: false,
+        hardMode: false
       }
     })
     return id;
