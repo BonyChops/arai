@@ -207,6 +207,25 @@ class Play extends React.Component {
                                 <h6 className="right-align">{this.state.currentIndex + 1} / {this.state.questions.length} 問目</h6>
                             </Col> : null}
                         </Row>
+                        <Row>
+                            <Col s={2}>
+                                {this.state.currentIndex > 0 ? <Button className="light-blue" onClick={() => this.goBack()}>
+                                    <Icon>arrow_back</Icon>
+                                </Button> : null}
+                            </Col>
+                            <Col s={8} className="right-align">
+                                <ProgressBar progress={this.state.currentIndex * 100 / this.state.questions.length} />
+                            </Col>
+                            <Col s={2} className={"right-align"}>
+                                {this.state.currentIndex < this.state.questions.length ? <Button
+                                    onClick={() => this.checkAnswer(currentQuestion)}
+                                    className={(currentQuestion.answered ? "light-blue" : "orange") + " right-align " + (this.state.currentIndex <= 0 ? "pulse" : "")}
+                                >
+                                    <Icon>{currentQuestion.answered ? ("arrow_forward") : "check"}</Icon>
+                                    {/* {">"} */}
+                                </Button> : null}
+                            </Col>
+                        </Row>
                         {(this.state.currentIndex < this.state.questions.length) ? <div>
                             <h4>{currentQuestion.title}</h4>
                             {currentQuestion.correct ? <h5 className="light-green-text"><Icon left>check</Icon>{arrayRandom(successMessages)}</h5> : null}
@@ -320,22 +339,7 @@ class Play extends React.Component {
                             </Row>
                         </div>}
 
-                        <Row>
-                            <Col s={2}>
-                                {this.state.currentIndex > 0 ? <Button className="light-blue" onClick={() => this.goBack()}>
-                                    {"<"}
-                                </Button> : null}
-                            </Col>
-                            <Col s={8} className="right-align">
-                                <ProgressBar progress={this.state.currentIndex * 100 / this.state.questions.length} />
-                            </Col>
-                            <Col s={2} className="right-align">
-                                {this.state.currentIndex < this.state.questions.length ? <Button onClick={() => this.checkAnswer(currentQuestion)} className={(currentQuestion.answered ? "light-blue" : "orange") + " right-align"}>
-                                    {/* {currentQuestion.answered ? (">") : "Check"} */}
-                                    {">"}
-                                </Button> : null}
-                            </Col>
-                        </Row>
+
                     </Col>
                 </Row>
             </Container>

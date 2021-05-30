@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/arai/static/css/main.80034d70.chunk.css",
-    "main.js": "/arai/static/js/main.dd5be75b.chunk.js",
-    "main.js.map": "/arai/static/js/main.dd5be75b.chunk.js.map",
+    "main.js": "/arai/static/js/main.4bb4ec82.chunk.js",
+    "main.js.map": "/arai/static/js/main.4bb4ec82.chunk.js.map",
     "runtime-main.js": "/arai/static/js/runtime-main.6a6bbc25.js",
     "runtime-main.js.map": "/arai/static/js/runtime-main.6a6bbc25.js.map",
     "static/css/2.6c0f60ba.chunk.css": "/arai/static/css/2.6c0f60ba.chunk.css",
@@ -24,6 +24,6 @@
     "static/css/2.6c0f60ba.chunk.css",
     "static/js/2.2bc9dc33.chunk.js",
     "static/css/main.80034d70.chunk.css",
-    "static/js/main.dd5be75b.chunk.js"
+    "static/js/main.4bb4ec82.chunk.js"
   ]
 }
