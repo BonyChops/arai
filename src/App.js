@@ -13,9 +13,10 @@ import Play from './components/Play/Play';
 import moment from "moment"
 import NotFound from './components/NotFound/NotFound';
 import ModalCollection from './components/ModalCollection/ModalCollection';
+import { githubSync } from "./functions/backup";
 import firebase from "./Firebase";
-import fetch from "node-fetch"
 import Auth from './Auth';
+import { cookieParser } from "./functions/cookie";
 const merge = require('deepmerge');
 
 class App extends React.Component {
@@ -29,6 +30,11 @@ class App extends React.Component {
       console.log("saved")
       console.log(this.state)
     }, 5000)
+    setInterval(() => {
+      const setState = this.setState.bind(this)
+      const deleteSecret = this.deleteSecret.bind(this);
+      githubSync(this.state, setState, deleteSecret);
+    }, 60000)
   }
 
   componentDidMount() {
@@ -73,13 +79,21 @@ class App extends React.Component {
     return id;
   }
 
+  deleteSecret = (obj) => {
+    delete obj.user;
+    delete obj.backupData;
+  }
+
   render = () => {
+    const setState = this.setState.bind(this);
+    const deleteSecret = this.deleteSecret.bind(this);
+    global.dumpAll = () => JSON.stringify(this.state);
     return (
       <div className="App">
-        <Auth setState={(state) => this.setState(state)}/>
+        <Auth setState={(state) => this.setState(state)} onLoggedIn={() => { console.log("calling"); githubSync(this.state, setState, deleteSecret, true) }} />
         <Router basename={process.env.PUBLIC_URL}>
-          <Header openAccountMenu={openAccountMenu} state={this.state}/>
-          <Accounts state={this.state}/>
+          <Header openAccountMenu={openAccountMenu} state={this.state} />
+          <Accounts state={this.state} setState={this.setState} />
           <Switch>
             <Route exact path="/" render={() => <Top />} />
             <Route exact path="/q/:id/play"

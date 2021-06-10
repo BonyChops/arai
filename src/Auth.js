@@ -1,7 +1,7 @@
 import React from "react";
 import firebase from "./Firebase";
 import M from "materialize-css";
-const cookieParser = () => (document.cookie.split(";").map(cookie => ({ key: cookie.split("=")[0], value: cookie.split("=")[1] })));
+import {cookieParser} from "./functions/cookie";
 
 class Auth extends React.Component {
     constructor(state) {
@@ -20,12 +20,14 @@ class Auth extends React.Component {
             if (user) {
                 console.log(user);
                 if (this._isMounted) {
+                    console.log(cookieParser())
                     const isProblem = cookieParser().find(cookie => cookie.key === "GITHUB_TOKEN") === undefined
                     if (isProblem) {
                         M.toast({ html: `<i class="material-icons left">warning</i>ログインに問題があります` })
                         user.loginProblem = isProblem
                     } else {
-                        M.toast({ html: `GitHub: ${user.displayName}でログイン済` })
+                        M.toast({ html: `GitHub: ${user.displayName}でログイン済` });
+                        this.props.onLoggedIn();
                     }
                     this.props.setState({
                         signInCheck: true,

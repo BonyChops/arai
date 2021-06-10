@@ -2,6 +2,7 @@ import { isMobile } from "react-device-detect"
 import M from 'materialize-css';
 import { Button, SideNavItem, Icon, SideNav } from "react-materialize"
 import firebase from "../../Firebase";
+import {cookieParser} from "../../functions/cookie";
 const getSideNav = (name) => (M.Sidenav.getInstance(document.querySelector(name)))
 const openAccountMenu = () => {
     if (isMobile) {
@@ -11,10 +12,9 @@ const openAccountMenu = () => {
         getSideNav("#accounts-pc").open();
     }
 }
-const cookieParser = () => (document.cookie.split(";").map(cookie => ({ key: cookie.split("=")[0], value: cookie.split("=")[1] })));
 
 
-const loginGitHub = () => {
+const loginGitHub = (props) => {
     const provider = new firebase.auth.GithubAuthProvider();
     provider.addScope('gist');
     provider.setCustomParameters({
@@ -30,8 +30,13 @@ const loginGitHub = () => {
             // This gives you a GitHub Access Token. You can use it to access the GitHub API.
             const token = credential.accessToken;
             document.cookie = `GITHUB_TOKEN=${token};secure`;
-            console.log(document.cookie.split(";").map(cookie => ({ key: cookie.split("=")[0], value: cookie.split("=")[1] })))
             M.toast({ html: "GitHubでログインしました" });
+            result.user.loginProblem = false;
+            props.setState({
+                signInCheck: true,
+                signedIn: true,
+                user: result.user
+            })
             const data = {
                 description: "test",
                 public: false,
@@ -70,6 +75,30 @@ const loginGitHub = () => {
 
 
 const Accounts = (props) => {
+    const menuData = {
+        user: {
+            background: 'https://placeimg.com/640/480/ocean',
+            email: props.state.signedIn ? props.state.user.email : 'jdandturk@gmail.com',
+            image: props.state.signedIn ? props.state.user.photoURL : 'https://github.com/github.png',
+            name: props.state.signedIn ? props.state.user.displayName : '未ログイン'
+        },
+        menu: [
+            {
+                icon: "cloud",
+                content: "GitHubでログイン(β)",
+                onClick: () => {
+                    const result = window.confirm('**この機能はベータ版です**\n\nGitHub Gistsに問題を同期します．ベータ版ですので，バックアップが上手く動作しない可能性があります．必ずご自身でもバックアップを取るようお願いします．\n\nログインが完了すると，自動的にバックアップが開始します．よろしいですか？');
+
+                    if (result) {
+                        loginGitHub(props);
+                    } else {
+                        M.toast({ html: "ログインはキャンセルされました" })
+                    }
+                },
+                href: "#login"
+            }
+        ]
+    }
     return (
         <div>
             <SideNav
@@ -79,30 +108,20 @@ const Accounts = (props) => {
                 }}
                 trigger={<></>}
             >
+
                 <SideNavItem
-                    user={{
-                        background: 'https://placeimg.com/640/480/ocean',
-                        email: props.state.signedIn ? props.state.user.email : 'jdandturk@gmail.com',
-                        image: props.state.signedIn ? props.state.user.photoURL :'https://github.com/github.png',
-                        name: props.state.signedIn ? props.state.user.displayName :  '未ログイン'
-                    }}
+                    user={menuData.user}
                     userView
                 />
-                <SideNavItem
-                    href="#login"
-                    icon={<Icon>cloud</Icon>}
-                    onClick={() => {
-                        const result = window.confirm('**この機能はベータ版です**\n\nGitHub Gistsに問題を同期します．ベータ版ですので，バックアップが上手く動作しない可能性があります．必ずご自身でもバックアップを取るようお願いします．\n\nログインが完了すると，自動的にバックアップが開始します．よろしいですか？');
-
-                        if (result) {
-                            loginGitHub();
-                        } else {
-                            M.toast({ html: "ログインはキャンセルされました" })
-                        }
-                    }}
+                {menuData.menu.map((v, k) => (<SideNavItem
+                    key={k}
+                    href={v.href}
+                    icon={<Icon>{v.icon}</Icon>}
+                    onClick={v.onClick}
                 >
-                    GitHubでログイン(β)
-                </SideNavItem>
+                    {v.content}
+                </SideNavItem>))}
+
                 {/* <SideNavItem href="#!second">
                     Second Link
                 </SideNavItem>
