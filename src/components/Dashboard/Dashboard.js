@@ -22,7 +22,7 @@ class Dashboard extends React.Component {
             isYamlValid: true,
             jsonMinify: false,
             jsonEditable: false,
-            showMore: false
+            showMore: false,
         }
 
     }
@@ -260,10 +260,10 @@ class Dashboard extends React.Component {
     render() {
         const SwitchTemp = (props) => (<Col s={12} m={4}>
             <Row>
-                <Col s={2}>
+                <Col s={4}>
                     <Switch {...props} />
                 </Col>
-                <Col s={10}>
+                <Col s={8}>
                     {props.title}
                 </Col>
             </Row>
@@ -308,6 +308,14 @@ class Dashboard extends React.Component {
                             onChange={(e) => this.handleChangeBool(e, "hardMode")}
                             onLabel=""
                             title="ハードモード"
+                        />
+                        <SwitchTemp
+                            id="manual-scoring-switch"
+                            offLabel=""
+                            checked={this.props.state.manualScoring}
+                            onChange={(e) => this.handleChangeBool(e, "manualScoring")}
+                            onLabel=""
+                            title="記述式は自己採点する"
                         />
                     </Row> : null}
                     <br /><br />

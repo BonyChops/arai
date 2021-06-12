@@ -26,7 +26,7 @@ const successMessages = [
     "さすが！",
     "超世紀誕生 ぱんぱかぱーん",
     "♪〜(ここでじょいふるが流れる)",
-    "年収1000万エンジニア！",
+    //"年収1000万エンジニア！",
     "Happy hacking!",
     "脳へのインストールが正常に進行しています...",
     "もしかして: 天才",
@@ -100,6 +100,7 @@ class Play extends React.Component {
                 title: question.title,
                 answered: false,
                 correct: false,
+                checkCorrect: false
             })),
             currentIndex: 0,
             disabledNext: false,
@@ -109,11 +110,11 @@ class Play extends React.Component {
 
 
 
-    checkAnswer = (currentQuestion) => {
+    checkAnswer = (currentQuestion, forceCorrect = false) => {
         this.setState({
             emptyWarn: false
         });
-        if (currentQuestion.answered) {
+        if (currentQuestion.answered && !currentQuestion.checkCorrect) {
             this.setState({
                 currentIndex: this.state.currentIndex + 1,
                 emptyWarn: false
@@ -121,25 +122,39 @@ class Play extends React.Component {
             return;
         }
         const questions = this.state.questions;
+        const question = questions[this.state.currentIndex];
         if (currentQuestion.answers.length <= 1) {
             //記述式
-            if (this.state[`answer_${0}`] === "" || this.state[`answer_${0}`] === undefined) {
-                console.log("")
-                this.setState({
-                    emptyWarn: true
-                })
+            console.log(this.props.state.manualScoring)
+            if (!question.checkCorrect && this.props.state.manualScoring && this.state[`answer_${0}`] !== currentQuestion.answers[0].title) {
+                //自己採点モード
+                question.checkCorrect = true;
+                question.answered = true;
+                console.log(this.state[`answer_${0}`])
+                if(this.state[`answer_${0}`] === undefined ||this.state[`answer_${0}`] === ""){
+                    this.setState({answer_0: "(自己採点)"});
+                }
                 return;
-            }
-            const targetOption = questions[this.state.currentIndex].answers[0];
-            if (this.state[`answer_${0}`] === currentQuestion.answers[0].title) {
-                targetOption.selected = true;
-                targetOption.insert = this.state[`answer_${0}`];
-                questions[this.state.currentIndex].answered = true;
-                questions[this.state.currentIndex].correct = true;
             } else {
-                targetOption.insert = this.state[`answer_${0}`];
-                questions[this.state.currentIndex].answered = true;
-                questions[this.state.currentIndex].correct = false;
+                question.checkCorrect = false;
+                if (this.state[`answer_${0}`] === "" || this.state[`answer_${0}`] === undefined) {
+                    console.log("")
+                    this.setState({
+                        emptyWarn: true
+                    })
+                    return;
+                }
+                const targetOption = question.answers[0];
+                if (forceCorrect || this.state[`answer_${0}`] === currentQuestion.answers[0].title) {
+                    targetOption.selected = true;
+                    targetOption.insert = this.state[`answer_${0}`];
+                    question.answered = true;
+                    question.correct = true;
+                } else {
+                    targetOption.insert = this.state[`answer_${0}`];
+                    question.answered = true;
+                    question.correct = false;
+                }
             }
         } else if (currentQuestion.answers.filter(answer => answer.answer).length <= 1) {
             //選択
@@ -150,27 +165,27 @@ class Play extends React.Component {
                 })
                 return;
             }
-            const targetOption = questions[this.state.currentIndex].answers.find(answer => answer.answer);
-            questions[this.state.currentIndex].answers.find(answer => answer.title === this.state[`answer_${0}`]).selected = true;
+            const targetOption = question.answers.find(answer => answer.answer);
+            question.answers.find(answer => answer.title === this.state[`answer_${0}`]).selected = true;
             if (String(this.state[`answer_${0}`]) === targetOption.title) {
                 console.log(String(this.state[`answer_${0}`]));
                 console.log(targetOption.title)
                 targetOption.selected = true;
-                questions[this.state.currentIndex].answered = true;
-                questions[this.state.currentIndex].correct = true;
+                question.answered = true;
+                question.correct = true;
             } else {
-                questions[this.state.currentIndex].answered = true;
-                questions[this.state.currentIndex].correct = false;
+                question.answered = true;
+                question.correct = false;
             }
         } else {
             //複数選択
-            for (const [key, value] of Object.entries(questions[this.state.currentIndex].answers)) {
+            for (const [key, value] of Object.entries(question.answers)) {
                 value.selected = (this.state[`answer_${key}`] === true);
                 console.log(value);
             }
-            console.log(questions[this.state.currentIndex].answers[1])
-            questions[this.state.currentIndex].correct = questions[this.state.currentIndex].answers.every(answer => answer.answer === answer.selected);
-            questions[this.state.currentIndex].answered = true;
+            console.log(question.answers[1])
+            question.correct = question.answers.every(answer => answer.answer === answer.selected);
+            question.answered = true;
         }
 
         const result = {}
@@ -189,7 +204,6 @@ class Play extends React.Component {
     }
 
     render() {
-
         if (this.props.state === undefined) {
             return (<NotFound />)
         }
@@ -219,6 +233,7 @@ class Play extends React.Component {
                             <Col s={2} className={"right-align"}>
                                 {this.state.currentIndex < this.state.questions.length ? <Button
                                     onClick={() => this.checkAnswer(currentQuestion)}
+                                    disabled={currentQuestion.checkCorrect}
                                     className={(currentQuestion.answered ? "light-blue" : "orange") + " right-align " + (this.state.currentIndex <= 0 ? "pulse" : "")}
                                 >
                                     <Icon>{currentQuestion.answered ? ("arrow_forward") : "check"}</Icon>
@@ -229,22 +244,50 @@ class Play extends React.Component {
                         {(this.state.currentIndex < this.state.questions.length) ? <div>
                             <h4>{currentQuestion.title}</h4>
                             {currentQuestion.correct ? <h5 className="light-green-text"><Icon left>check</Icon>{arrayRandom(successMessages)}</h5> : null}
-                            {currentQuestion.answered && !currentQuestion.correct ? <h5 className="red-text"><Icon left>close</Icon>{arrayRandom(encourageMessages)}</h5> : null}
+                            {!currentQuestion.checkCorrect && currentQuestion.answered && !currentQuestion.correct ? <h5 className="red-text"><Icon left>close</Icon>{arrayRandom(encourageMessages)}</h5> : null}
                             {this.state.emptyWarn ? <h6 className="red-text">白紙で提出しないでください！</h6> : null}
                             {currentQuestion.answers.length <= 1 ? currentQuestion.answers.map((answer, k) => (
-                                <Row className={answer.answer && answer.selected ? "green lighten-4" : (answer.selected || (currentQuestion.answers.length <= 1 && currentQuestion.answered) ? "red lighten-4" : "")}>
+
+                                <Row className={currentQuestion.checkCorrect ? "" : (answer.answer && answer.selected ? "green lighten-4" : (answer.selected || (currentQuestion.answers.length <= 1 && currentQuestion.answered) ? "red lighten-4" : ""))}>
                                     <Col s={12} >
+                                        {this.props.state.manualScoring ? <p>(自己採点モードのため白紙でもOKです)</p> : null }
                                         <TextInput
                                             id={`answer_${k}`}
-                                            label="回答をここに書いてください"
+                                            label={"回答をここに書いてください"}
                                             className="black-text"
                                             disabled={currentQuestion.answered}
                                             onChange={(e) => this.setState({ [`answer_${k}`]: e.target.value })}
-                                            value={!currentQuestion.answered ? this.state[`answer_${k}`] : answer.insert}
+                                            value={!currentQuestion.answered || currentQuestion.checkCorrect ? this.state[`answer_${k}`] : answer.insert}
                                         />
                                     </Col>
-                                    {currentQuestion.answered ? <Col s={12} className={answer.answer && answer.selected ? "green-text" : (answer.selected || (currentQuestion.answers.length <= 1 && currentQuestion.answered) ? "red-text" : "")}>
-                                        {answer.title}
+                                    {currentQuestion.answered ? <Col
+                                        s={12}
+                                        className={
+                                            answer.answer && answer.selected ?
+                                                "green-text" : (
+                                                    answer.selected ||
+                                                        (currentQuestion.answers.length <= 1 && currentQuestion.answered) ?
+                                                        "red-text" : "")}>
+                                        <Row><Col s={12}>答: {answer.title}</Col></Row>
+                                    </Col> : null}
+                                    {currentQuestion.checkCorrect ? <Col
+                                        s={12}>
+                                        <h6>答えはあっていましたか？</h6><br />
+                                        <Row>
+                                            <Col s={6} m={4} offset="m2" className="align-center">
+                                                <Button className="white green-text" onClick={() => this.checkAnswer(currentQuestion, true)}>
+                                                    <Icon left>check</Icon>正解
+                                                </Button>
+                                            </Col>
+                                            <Col s={6} m={4} className="align-center">
+                                                <Button className="white red-text" onClick={() => this.checkAnswer(currentQuestion, false)}>
+                                                    <Icon left>close</Icon>不正解
+                                                </Button>
+                                            </Col>
+                                            <Col s={12} m={4} offset="m2">
+
+                                            </Col>
+                                        </Row>
                                     </Col> : null}
                                 </Row>
                             )) : currentQuestion.answers.filter(answer => answer.answer).length <= 1 ? <Row>
@@ -311,13 +354,13 @@ class Play extends React.Component {
                                         <td className={question.correct ? "green-text" : "red-text"}>
                                             <Icon left>{question.correct ? "check" : "close"}</Icon> <Link onClick={() => this.setState({ currentIndex: k })}>第{k + 1}問 </Link>
                                         </td>
-                                        <td className={question.correct ? "green-text" : "red-text"}>
+                                        <td className={"truncate " + (question.correct ? "green-text" : "red-text")}>
                                             {
                                                 question.answers.length <= 1 ? question.answers[0].insert :
                                                     question.answers.filter(answer => answer.selected).map(answer => answer.title).join(", ")
                                             }
                                         </td>
-                                        <td>
+                                        <td className={"truncate"}>
                                             {
                                                 question.answers.length <= 1 ? question.answers[0].title :
                                                     question.answers.filter(answer => answer.answer).map(answer => answer.title).join(", ")
