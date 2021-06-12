@@ -332,8 +332,8 @@ class Play extends React.Component {
                                     <h2 className="green-text"><Icon medium left>check</Icon>お疲れ様！</h2>
                                 </Col>
                                 <Col s={4}>
-                                    <CircularProgressbar value={this.state.questions.filter(question => question.correct).length * 100 / this.state.questions.length}
-                                        text={`${this.state.questions.filter(question => question.correct).length * 100 / this.state.questions.length}%`} />
+                                    <CircularProgressbar value={Math.round(this.state.questions.filter(question => question.correct).length * 100 / this.state.questions.length)}
+                                        text={`${Math.round(this.state.questions.filter(question => question.correct).length * 100 / this.state.questions.length)}%`} />
                                     <h5 className="center">{this.state.questions.filter(question => question.correct).length} / {this.state.questions.length}</h5>
                                 </Col>
                             </Row>
