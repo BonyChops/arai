@@ -7,6 +7,7 @@ import { isMobile } from "react-device-detect";
 import { Link } from "react-router-dom";
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { Tex, InlineTex } from 'react-tex';
 
 const successMessages = [
     "Well done!",
@@ -131,8 +132,8 @@ class Play extends React.Component {
                 question.checkCorrect = true;
                 question.answered = true;
                 console.log(this.state[`answer_${0}`])
-                if(this.state[`answer_${0}`] === undefined ||this.state[`answer_${0}`] === ""){
-                    this.setState({answer_0: "(自己採点)"});
+                if (this.state[`answer_${0}`] === undefined || this.state[`answer_${0}`] === "") {
+                    this.setState({ answer_0: "(自己採点)" });
                 }
                 return;
             } else {
@@ -242,7 +243,8 @@ class Play extends React.Component {
                             </Col>
                         </Row>
                         {(this.state.currentIndex < this.state.questions.length) ? <div>
-                            <h4>{currentQuestion.title}</h4>
+
+                            <h4><InlineTex texContent={currentQuestion.title} /></h4>
                             {currentQuestion.correct ? <h5 className="light-green-text"><Icon left>check</Icon>{arrayRandom(successMessages)}</h5> : null}
                             {!currentQuestion.checkCorrect && currentQuestion.answered && !currentQuestion.correct ? <h5 className="red-text"><Icon left>close</Icon>{arrayRandom(encourageMessages)}</h5> : null}
                             {this.state.emptyWarn ? <h6 className="red-text">白紙で提出しないでください！</h6> : null}
@@ -250,7 +252,7 @@ class Play extends React.Component {
 
                                 <Row className={currentQuestion.checkCorrect ? "" : (answer.answer && answer.selected ? "green lighten-4" : (answer.selected || (currentQuestion.answers.length <= 1 && currentQuestion.answered) ? "red lighten-4" : ""))}>
                                     <Col s={12} >
-                                        {this.props.state.manualScoring ? <p>(自己採点モードのため白紙でもOKです)</p> : null }
+                                        {this.props.state.manualScoring ? <p>(自己採点モードのため白紙でもOKです)</p> : null}
                                         <TextInput
                                             id={`answer_${k}`}
                                             label={"回答をここに書いてください"}
@@ -268,7 +270,7 @@ class Play extends React.Component {
                                                     answer.selected ||
                                                         (currentQuestion.answers.length <= 1 && currentQuestion.answered) ?
                                                         "red-text" : "")}>
-                                        <Row><Col s={12}>答: {answer.title}</Col></Row>
+                                        <Row><Col s={12}>答: <InlineTex texContent={answer.title} /></Col></Row>
                                     </Col> : null}
                                     {currentQuestion.checkCorrect ? <Col
                                         s={12}>
@@ -304,7 +306,7 @@ class Play extends React.Component {
                                                 value={answer.title}
                                                 checked={!currentQuestion.answered ? this.state[`answer_${0}`] === answer.title : answer.selected}
                                             />
-                                            <span>{answer.title} {answer.answer && currentQuestion.answered ? <Icon>check</Icon> : null}</span>
+                                            <span><InlineTex texContent={answer.title} />{answer.answer && currentQuestion.answered ? <Icon>check</Icon> : null}</span>
                                         </label>
                                     </p>
                                 ])}
