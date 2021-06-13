@@ -409,7 +409,7 @@ class Play extends React.Component {
                 header='問題をやり直す'
                 bottomSheet={isMobile}
                 actions={[
-                    <Button flat waves="light" onClick={() => getModal("#backToEdit").close()}>キャンセル</Button>,
+                    <Button flat waves="light" onClick={() => getModal("#retryQuiz").close()}>キャンセル</Button>,
                     <Button flat waves="light" className="orange-text" onClick={() => {
                         this.regenerateQuiz(false);
                         getModal("#retryQuiz").close()
@@ -425,7 +425,7 @@ class Play extends React.Component {
                 header='間違えた問題をやり直す'
                 bottomSheet={isMobile}
                 actions={[
-                    <Button flat waves="light" onClick={() => getModal("#backToEdit").close()}>キャンセル</Button>,
+                    <Button flat waves="light" onClick={() => getModal("#retryFailedQuiz").close()}>キャンセル</Button>,
                     <Button flat waves="light" className="orange-text" onClick={() => {
                         this.regenerateQuiz(true);
                         getModal("#retryFailedQuiz").close()

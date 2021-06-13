@@ -1,29 +1,29 @@
 {
   "files": {
     "main.css": "/arai/static/css/main.80034d70.chunk.css",
-    "main.js": "/arai/static/js/main.ac1c5b48.chunk.js",
-    "main.js.map": "/arai/static/js/main.ac1c5b48.chunk.js.map",
-    "runtime-main.js": "/arai/static/js/runtime-main.d3a4180d.js",
-    "runtime-main.js.map": "/arai/static/js/runtime-main.d3a4180d.js.map",
+    "main.js": "/arai/static/js/main.f7c196f1.chunk.js",
+    "main.js.map": "/arai/static/js/main.f7c196f1.chunk.js.map",
+    "runtime-main.js": "/arai/static/js/runtime-main.3fd70ca4.js",
+    "runtime-main.js.map": "/arai/static/js/runtime-main.3fd70ca4.js.map",
     "static/css/2.6c0f60ba.chunk.css": "/arai/static/css/2.6c0f60ba.chunk.css",
-    "static/js/2.042c93eb.chunk.js": "/arai/static/js/2.042c93eb.chunk.js",
-    "static/js/2.042c93eb.chunk.js.map": "/arai/static/js/2.042c93eb.chunk.js.map",
-    "static/js/3.0515c94a.chunk.js": "/arai/static/js/3.0515c94a.chunk.js",
-    "static/js/3.0515c94a.chunk.js.map": "/arai/static/js/3.0515c94a.chunk.js.map",
+    "static/js/2.92519230.chunk.js": "/arai/static/js/2.92519230.chunk.js",
+    "static/js/2.92519230.chunk.js.map": "/arai/static/js/2.92519230.chunk.js.map",
+    "static/js/3.e6cf4292.chunk.js": "/arai/static/js/3.e6cf4292.chunk.js",
+    "static/js/3.e6cf4292.chunk.js.map": "/arai/static/js/3.e6cf4292.chunk.js.map",
     "index.html": "/arai/index.html",
     "static/css/2.6c0f60ba.chunk.css.map": "/arai/static/css/2.6c0f60ba.chunk.css.map",
     "static/css/main.80034d70.chunk.css.map": "/arai/static/css/main.80034d70.chunk.css.map",
-    "static/js/2.042c93eb.chunk.js.LICENSE.txt": "/arai/static/js/2.042c93eb.chunk.js.LICENSE.txt",
+    "static/js/2.92519230.chunk.js.LICENSE.txt": "/arai/static/js/2.92519230.chunk.js.LICENSE.txt",
     "static/media/0.47afa453.png": "/arai/static/media/0.47afa453.png",
     "static/media/1.0a828dac.png": "/arai/static/media/1.0a828dac.png",
     "static/media/2.2b34912e.png": "/arai/static/media/2.2b34912e.png",
     "static/media/sample.a15d77bc.yml": "/arai/static/media/sample.a15d77bc.yml"
   },
   "entrypoints": [
-    "static/js/runtime-main.d3a4180d.js",
+    "static/js/runtime-main.3fd70ca4.js",
     "static/css/2.6c0f60ba.chunk.css",
-    "static/js/2.042c93eb.chunk.js",
+    "static/js/2.92519230.chunk.js",
     "static/css/main.80034d70.chunk.css",
-    "static/js/main.ac1c5b48.chunk.js"
+    "static/js/main.f7c196f1.chunk.js"
   ]
 }
