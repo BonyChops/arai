@@ -31,10 +31,10 @@ const Questions = (props) => {
                     }}><Icon left>edit</Icon>新規作成</Button>,
                     <Button flat waves="light" onClick={() => getModal("#questions").close()}>CLOSE</Button>
                 ]}
-                bottomSheet={isMobile}>
+                bottomSheet={true}>
                 <Row>
                     {questions.map((question, k) => (
-                        <Col key={k} m={4} s={12}>
+                        <Col key={k} l={4} m={6} s={12}>
                             <Card
                                 actions={[
                                     <Link key="play" to={`/q/${question.id}/play`} onClick={() => getModal("#questions").close()}><Icon>play_arrow</Icon></Link>,
