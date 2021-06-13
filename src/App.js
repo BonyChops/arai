@@ -21,8 +21,6 @@ class App extends React.Component {
 
     setInterval(() => {
       window.localStorage.setItem("data", JSON.stringify(this.state));
-      console.log("saved")
-      console.log(this.state)
     }, 5000)
   }
 
