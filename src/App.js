@@ -11,6 +11,9 @@ import Play from './components/Play/Play';
 import moment from "moment"
 import NotFound from './components/NotFound/NotFound';
 import ModalCollection from './components/ModalCollection/ModalCollection';
+import "./css/materialize.min.css";
+import "./css/materialIcon.css";
+
 const merge = require('deepmerge');
 
 class App extends React.Component {
