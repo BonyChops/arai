@@ -24,14 +24,14 @@ const Questions = (props) => {
             <Modal
                 id='questions'
                 header='問題を選択...'
-                fixedFooter={isMobile}
+                fixedFooter={true}
                 actions={[
                     <Button flat waves="light" className="orange-text" onClick={() => {
                         requestQuestion(props, questions);
                     }}><Icon left>edit</Icon>新規作成</Button>,
                     <Button flat waves="light" onClick={() => getModal("#questions").close()}>CLOSE</Button>
                 ]}
-                bottomSheet={true}>
+                bottomSheet={isMobile}>
                 <Row>
                     {questions.map((question, k) => (
                         <Col key={k} l={4} m={6} s={12}>
