@@ -1,32 +1,33 @@
 {
   "files": {
     "main.css": "/arai/static/css/main.790b1a28.chunk.css",
-    "main.js": "/arai/static/js/main.ac701bcb.chunk.js",
-    "main.js.map": "/arai/static/js/main.ac701bcb.chunk.js.map",
-    "runtime-main.js": "/arai/static/js/runtime-main.058717db.js",
-    "runtime-main.js.map": "/arai/static/js/runtime-main.058717db.js.map",
+    "main.js": "/arai/static/js/main.267aa490.chunk.js",
+    "main.js.map": "/arai/static/js/main.267aa490.chunk.js.map",
+    "runtime-main.js": "/arai/static/js/runtime-main.4c110bd0.js",
+    "runtime-main.js.map": "/arai/static/js/runtime-main.4c110bd0.js.map",
     "static/css/2.6c0f60ba.chunk.css": "/arai/static/css/2.6c0f60ba.chunk.css",
-    "static/js/2.e2159327.chunk.js": "/arai/static/js/2.e2159327.chunk.js",
-    "static/js/2.e2159327.chunk.js.map": "/arai/static/js/2.e2159327.chunk.js.map",
-    "static/js/3.8b7b2091.chunk.js": "/arai/static/js/3.8b7b2091.chunk.js",
-    "static/js/3.8b7b2091.chunk.js.map": "/arai/static/js/3.8b7b2091.chunk.js.map",
+    "static/js/2.1dc83adc.chunk.js": "/arai/static/js/2.1dc83adc.chunk.js",
+    "static/js/2.1dc83adc.chunk.js.map": "/arai/static/js/2.1dc83adc.chunk.js.map",
+    "static/js/3.7016d5d7.chunk.js": "/arai/static/js/3.7016d5d7.chunk.js",
+    "static/js/3.7016d5d7.chunk.js.map": "/arai/static/js/3.7016d5d7.chunk.js.map",
     "index.html": "/arai/index.html",
     "service-worker.js": "/arai/service-worker.js",
     "service-worker.js.map": "/arai/service-worker.js.map",
     "static/css/2.6c0f60ba.chunk.css.map": "/arai/static/css/2.6c0f60ba.chunk.css.map",
     "static/css/main.790b1a28.chunk.css.map": "/arai/static/css/main.790b1a28.chunk.css.map",
-    "static/js/2.e2159327.chunk.js.LICENSE.txt": "/arai/static/js/2.e2159327.chunk.js.LICENSE.txt",
+    "static/js/2.1dc83adc.chunk.js.LICENSE.txt": "/arai/static/js/2.1dc83adc.chunk.js.LICENSE.txt",
     "static/media/0.47afa453.png": "/arai/static/media/0.47afa453.png",
     "static/media/1.0a828dac.png": "/arai/static/media/1.0a828dac.png",
     "static/media/2.2b34912e.png": "/arai/static/media/2.2b34912e.png",
+    "static/media/README.efa77d33.md": "/arai/static/media/README.efa77d33.md",
     "static/media/materialIcon.css": "/arai/static/media/materialIcon.a269996c.woff",
     "static/media/sample.a15d77bc.yml": "/arai/static/media/sample.a15d77bc.yml"
   },
   "entrypoints": [
-    "static/js/runtime-main.058717db.js",
+    "static/js/runtime-main.4c110bd0.js",
     "static/css/2.6c0f60ba.chunk.css",
-    "static/js/2.e2159327.chunk.js",
+    "static/js/2.1dc83adc.chunk.js",
     "static/css/main.790b1a28.chunk.css",
-    "static/js/main.ac701bcb.chunk.js"
+    "static/js/main.267aa490.chunk.js"
   ]
 }

@@ -103,6 +103,7 @@ class App extends React.Component {
               render={(props) => <Dashboard
                 key={props.match.params.id}
                 state={this.state[`question_${props.match.params.id}`]}
+                baseState={this.state}
                 accessor={(state) => this.accessor(state, props.match.params.id)}
                 baseAccessor={(state) => this.setState(state)}
               />} />
