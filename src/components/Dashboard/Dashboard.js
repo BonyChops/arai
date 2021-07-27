@@ -7,6 +7,7 @@ import fetch from "node-fetch";
 import { isMobile } from "react-device-detect";
 import NotFound from '../NotFound/NotFound';
 import { withRouter } from 'react-router';
+import { generateQuestionGist } from '../../functions/backup';
 
 
 class Dashboard extends React.Component {
@@ -31,14 +32,25 @@ class Dashboard extends React.Component {
         if (this.props.state === undefined) {
             return;
         }
-        this.generateJson();
-        //console.log(await (await fetch(sampleYaml)).text())
-        if (this.props.state.questions.length <= 0) {
-            this.tryEditYaml(await (await fetch(sampleYaml)).text(), true, true);
+        if (this.props.state.challengeJson !== false) {
+            console.log("Challenging")
+            this.tryEditJson(JSON.stringify(this.props.state.challengeJson), true, true);
+            this.props.accessor({
+                challengeJson: false
+            })
         } else {
-            this.generateYaml();
+            if (this.props.state.questions.length <= 0) {
+                this.tryEditYaml(await (await fetch(sampleYaml)).text(), true, true);
+            } else {
+                console.log("generate")
+                this.generateYaml();
+                this.generateJson();
+            }
         }
+        //console.log(await (await fetch(sampleYaml)).text())
+
         M.textareaAutoResize(document.querySelector('textarea'));
+        console.log("Finished");
     }
 
     handleChange = (event, target, localChange = false) => {
@@ -117,21 +129,27 @@ class Dashboard extends React.Component {
             this.props.accessor({ json });
             this.props.accessor(json);
         } */
-    tryEditJson = (event, check = false) => {
-        this.setState({ jsonBuffer: event.target.value });
+    tryEditJson = (event, check = false, loadDefault = false) => {
+        const target = loadDefault ? event : event.target.value;
+        this.setState({ jsonBuffer: target });
+        console.log(target);
         if (!check) {
             return;
         }
         let json;
         try {
-            json = JSON.parse(event.target.value);
+            json = JSON.parse(target);
+            console.log(target);
+            console.log(json);
+            console.log("Valid")
         } catch (e) {
+            console.log("Not Valid")
             this.setState({ isJsonValid: false });
             return;
         }
         this.deleteOptions(json);
 
-
+        console.log(json);
         this.setState({ isJsonValid: true });
         this.setState({ json });
         this.props.accessor(json);
@@ -212,6 +230,7 @@ class Dashboard extends React.Component {
     }
 
     generateJson = (object = {}) => {
+        console.log(object)
         const buffer = { ...this.props.state };
         this.deleteOptions(object);
         this.deleteOptions(buffer);
@@ -253,6 +272,7 @@ class Dashboard extends React.Component {
         delete object.jsonEditable;
         delete object.showMore;
         delete object.id;
+        delete object.jsonChallenge
         //delete object.hardMode;
     }
 
@@ -279,6 +299,7 @@ class Dashboard extends React.Component {
                         </Col>
                         <Col s={12} m={6} >
                             <Button large waves="light" onClick={() => this.props.history.push(`/q/${this.props.state.id}/play`)}><Icon left>play_arrow</Icon>開始</Button>
+                            <Button large flat onClick={() => {console.log(this.state.json); generateQuestionGist(JSON.parse(this.state.json), (state) => this.props.baseAccessor(state))}}><Icon left>share</Icon></Button>
                         </Col>
 
                     </Row>
