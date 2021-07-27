@@ -2,7 +2,9 @@ import { isMobile } from "react-device-detect"
 import M from 'materialize-css';
 import { Button, SideNavItem, Icon, SideNav } from "react-materialize"
 import firebase from "../../Firebase";
-import {cookieParser} from "../../functions/cookie";
+import { cookieParser } from "../../functions/cookie";
+import { githubSync } from "../../functions/backup";
+
 const getSideNav = (name) => (M.Sidenav.getInstance(document.querySelector(name)))
 const openAccountMenu = () => {
     if (isMobile) {
@@ -37,29 +39,10 @@ const loginGitHub = (props) => {
                 signedIn: true,
                 user: result.user
             })
-            const data = {
-                description: "test",
-                public: false,
-                files: {
-                    "test.txt": {
-                        content: "Hello"
-                    }
-                }
-            }
-            /* fetch("https://api.github.com/gists", {
-                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                },
-                redirect: 'follow', // manual, *follow, error
-                body: JSON.stringify(data) // body data type must match "Content-Type" header
-            })
-                .then(response => response.json())
-                .then(data => console.log(data)); */
-            console.log(document.cookie)
+            githubSync(props.state, props.setState, true, true);
             // The signed-in user info.
             const user = result.user;
+            window.reload();
             // ...
         }).catch((error) => {
             // Handle Errors here.
@@ -83,7 +66,7 @@ const Accounts = (props) => {
             name: props.state.signedIn ? props.state.user.displayName : '未ログイン'
         },
         menu: [
-            {
+            !(props.state.signedIn && !props.state.user.loginProblem) ? ({
                 icon: "cloud",
                 content: "GitHubでログイン(β)",
                 onClick: () => {
@@ -96,7 +79,20 @@ const Accounts = (props) => {
                     }
                 },
                 href: "#login"
-            }
+            }) : ({
+                icon: "logout",
+                content: "ログアウト",
+                onClick: () => {
+                    M.toast({ html: "ログアウトしました" })
+                    firebase.auth().signOut();
+                    document.cookie = `GITHUB_TOKEN=; expires=` + (new Date('1999-12-31T23:59:59Z')).toUTCString();
+                    props.accessor({
+                        user: undefined,
+                        signedIn: false
+                    })
+                }
+
+            })
         ]
     }
     return (

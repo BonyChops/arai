@@ -1,4 +1,3 @@
-import M from 'materialize-css';
 import { Button, Card, Row, Col, Container, Section, TextInput } from 'react-materialize';
 import { BrowserRouter as Router, Route, Switch, withRouter } from 'react-router-dom';
 import Header from './components/Header/Header';
@@ -24,17 +23,6 @@ class App extends React.Component {
     super(props);
     const data = JSON.parse(window.localStorage.getItem("data"));
     this.state = data !== null ? data : {};
-
-    setInterval(() => {
-      window.localStorage.setItem("data", JSON.stringify(this.state));
-      console.log("saved")
-      console.log(this.state)
-    }, 5000)
-    setInterval(() => {
-      const setState = this.setState.bind(this)
-      const deleteSecret = this.deleteSecret.bind(this);
-      githubSync(this.state, setState, deleteSecret);
-    }, 60000)
   }
 
   componentDidMount() {
@@ -42,11 +30,19 @@ class App extends React.Component {
       signInCheck: false,
       signedIn: false,
     })
+    setInterval(() => {
+      window.localStorage.setItem("data", JSON.stringify(this.state));
+    }, 5000)
+    setInterval(() => {
+      const setState = this.setState.bind(this);
+      //console.log("呼びます")
+      githubSync(this.state, setState);
+    }, 10000)
   }
 
   accessor = (state, id = this.props.currentId) => {
     const keyName = `question_${id}`;
-    console.log(state);
+    //console.log(state);
     const question = this.state[keyName];
     if (question === undefined) return false;
     this.setState({
@@ -58,7 +54,7 @@ class App extends React.Component {
     })
   }
 
-  generateQuestion = () => {
+  generateQuestion = (json = false) => {
     const genId = () => {
       const number = Math.random();
       number.toString(36);
@@ -67,33 +63,29 @@ class App extends React.Component {
     const id = genId();
     this.setState({
       [`question_${id}`]: {
-        title: "無題のクイズ",
-        description: moment().format("YYYY/MM/DD HH:mm:ssのクイズ"),
+        title: !json ? "無題のクイズ" : json.title,
+        description: !json ? moment().format("YYYY/MM/DD HH:mm:ssのクイズ") : json.description,
         id,
         questions: [],
         shuffleOptions: false,
         shuffleQuestions: false,
-        hardMode: false
+        hardMode: false,
+        challengeJson: json
       }
     })
     return id;
   }
 
-  deleteSecret = (obj) => {
-    delete obj.user;
-    delete obj.backupData;
-  }
 
   render = () => {
     const setState = this.setState.bind(this);
-    const deleteSecret = this.deleteSecret.bind(this);
     global.dumpAll = () => JSON.stringify(this.state);
     return (
       <div className="App">
-        <Auth setState={(state) => this.setState(state)} onLoggedIn={() => { console.log("calling"); githubSync(this.state, setState, deleteSecret, true) }} />
+        <Auth setState={(state) => this.setState(state)} onLoggedIn={() => { githubSync(this.state, setState, true, true) }} />
         <Router basename={process.env.PUBLIC_URL}>
-          <Header openAccountMenu={openAccountMenu} state={this.state} />
-          <Accounts state={this.state} setState={this.setState} />
+          <Header openAccountMenu={openAccountMenu} state={this.state} accessor={(state) => this.setState(state)} />
+          <Accounts state={this.state} accessor={(state) => this.setState(state)} />
           <Switch>
             <Route exact path="/" render={() => <Top />} />
             <Route exact path="/q/:id/play"
@@ -108,13 +100,13 @@ class App extends React.Component {
                 key={props.match.params.id}
                 state={this.state[`question_${props.match.params.id}`]}
                 accessor={(state) => this.accessor(state, props.match.params.id)}
-                baseAccessor={this.setState}
+                baseAccessor={(state) => this.setState(state)}
               />} />
             <Route render={() => <NotFound />} />
           </Switch>
           <Questions generateQuestion={this.generateQuestion} state={this.state} baseAccessor={(state) => this.setState(state)} />
+          <ModalCollection state={this.state} generateQuestion={this.generateQuestion} />
         </Router>
-        <ModalCollection />
         {/*  <Footer /> */}
       </div >
     )

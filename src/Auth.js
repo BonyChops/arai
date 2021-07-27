@@ -18,9 +18,7 @@ class Auth extends React.Component {
 
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
-                console.log(user);
                 if (this._isMounted) {
-                    console.log(cookieParser())
                     const isProblem = cookieParser().find(cookie => cookie.key === "GITHUB_TOKEN") === undefined
                     if (isProblem) {
                         M.toast({ html: `<i class="material-icons left">warning</i>ログインに問題があります` })

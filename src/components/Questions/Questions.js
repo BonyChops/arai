@@ -3,9 +3,17 @@ import { Button, Card, Col, Container, Icon, Modal, Row, Section } from "react-m
 import M, { Toast } from "materialize-css"
 import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { importFromGist } from "../../functions/backup";
 
 const Questions = (props) => {
+    useEffect(() => {
+        const queryParams = props.location.search.substr(1).split("&").map((item) => ({ key: item.split("=")[0], value: item.split("=")[1] }))
+        const importId = queryParams.find(item => item.key === "importId")?.value;
+        if(importId !== undefined){
+            importFromGist(importId, props.generateQuestion, (q) => props.history.push(q));
+        }
+    }, [])
     const getModal = (name) => (M.Modal.getInstance(document.querySelector(name)))
 
     const requestQuestion = (props, questions) => {
@@ -17,7 +25,8 @@ const Questions = (props) => {
         props.history.push(`/q/${id}`);
     }
     const [deleteTarget, setDeleteTarget] = useState(false);
-    console.log(props.state)
+    const queryParams = props.location.search.substr(1).split("&").map((item) => ({ key: item.split("=")[0], value: item.split("=")[1] }))
+    const importId = queryParams.find(item => item.key === "importId")?.value;
     const questions = Object.keys(props.state).filter(key => (/^question_(.*)$/).test(key) && props.state[key] !== undefined).map(key => (props.state[key]));
     return (
         <div>
@@ -29,6 +38,9 @@ const Questions = (props) => {
                     <Button flat waves="light" className="orange-text" onClick={() => {
                         requestQuestion(props, questions);
                     }}><Icon left>edit</Icon>新規作成</Button>,
+                    <Button waves="light" flat onClick={() => {
+                        getModal("#importLink").open()
+                    }}><Icon left>link</Icon>IDからインポート</Button>,
                     <Button flat waves="light" onClick={() => getModal("#questions").close()}>CLOSE</Button>
                 ]}
                 bottomSheet={isMobile}>
@@ -58,8 +70,8 @@ const Questions = (props) => {
                             <Row className="center">
                                 <Button waves="light" className="orange" onClick={() => {
                                     requestQuestion(props, questions)
-                                }}><Icon left>edit</Icon>新規作成</Button>,
-                </Row>
+                                }}><Icon left>edit</Icon>新規作成</Button>
+                            </Row>
                         </Container>
                     </Section>) : null}
 
@@ -83,7 +95,7 @@ const Questions = (props) => {
                 bottomSheet={isMobile}>
                 <Row>
                     以下の問題を消します．本当によろしいですか？<br />
-                   <Col m={6} s={12}>
+                    <Col m={6} s={12}>
                         <Card
                             title={deleteTarget.title}
                         >{deleteTarget.description}</Card>
