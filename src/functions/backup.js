@@ -26,7 +26,6 @@ const fetchRequestWithNoCors = async (url) => {
 }
 
 const githubSync = async (stateArg, setState, modifyDataBase = false, force = false) => {
-    return //Under construction
     const state = JSON.parse(JSON.stringify(stateArg))
     const getUserName = async () => {
         const userResult = await fetchRequest(`https://api.github.com/user`);
@@ -50,7 +49,8 @@ const githubSync = async (stateArg, setState, modifyDataBase = false, force = fa
     if (state.user === undefined || (!(state.signedIn && state.user.loginProblem !== true) && !force)) {
         return
     }
-    const id = (state.user?.id === undefined) ? await getUserName() : state.user.id
+    const id = (state.user?.id === undefined) ? await getUserName() : state.user.id;
+    return; //Under construction
     const { userGist, database } = await fetchDataBase(id);
     console.log(userGist);
     console.log(database);
