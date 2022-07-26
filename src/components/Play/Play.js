@@ -127,7 +127,7 @@ class Play extends React.Component {
         if (currentQuestion.answers.length <= 1) {
             //記述式
             console.log(this.props.state.manualScoring)
-            if (!question.checkCorrect && this.props.state.manualScoring && this.state[`answer_${0}`] !== currentQuestion.answers[0].title) {
+            if (!question.checkCorrect && this.props.state.manualScoring && this.state[`answer_${0}`] !== String(currentQuestion.answers[0].title)) {
                 //自己採点モード
                 question.checkCorrect = true;
                 question.answered = true;
@@ -146,7 +146,7 @@ class Play extends React.Component {
                     return;
                 }
                 const targetOption = question.answers[0];
-                if (forceCorrect || this.state[`answer_${0}`] === currentQuestion.answers[0].title) {
+                if (forceCorrect || this.state[`answer_${0}`] === String(currentQuestion.answers[0].title)) {
                     targetOption.selected = true;
                     targetOption.insert = this.state[`answer_${0}`];
                     question.answered = true;
@@ -167,7 +167,7 @@ class Play extends React.Component {
                 return;
             }
             const targetOption = question.answers.find(answer => answer.answer);
-            question.answers.find(answer => answer.title === this.state[`answer_${0}`]).selected = true;
+            question.answers.find(answer => String(answer.title) === this.state[`answer_${0}`]).selected = true;
             if (String(this.state[`answer_${0}`]) === targetOption.title) {
                 console.log(String(this.state[`answer_${0}`]));
                 console.log(targetOption.title)
@@ -270,7 +270,7 @@ class Play extends React.Component {
                                                     answer.selected ||
                                                         (currentQuestion.answers.length <= 1 && currentQuestion.answered) ?
                                                         "red-text" : "")}>
-                                        <Row><Col s={12}>答: <InlineTex texContent={answer.title} /></Col></Row>
+                                        <Row><Col s={12}>答: <InlineTex texContent={String(answer.title)} /></Col></Row>
                                     </Col> : null}
                                     {currentQuestion.checkCorrect ? <Col
                                         s={12}>
@@ -303,10 +303,10 @@ class Play extends React.Component {
                                                 type="radio"
                                                 id={`answer_${k}`}
                                                 disabled={currentQuestion.answered}
-                                                value={answer.title}
-                                                checked={!currentQuestion.answered ? this.state[`answer_${0}`] === answer.title : answer.selected}
+                                                value={String(answer.title)}
+                                                checked={!currentQuestion.answered ? this.state[`answer_${0}`] === String(answer.title) : answer.selected}
                                             />
-                                            <span><InlineTex texContent={answer.title} />{answer.answer && currentQuestion.answered ? <Icon>check</Icon> : null}</span>
+                                            <span><InlineTex texContent={String(answer.title)} />{answer.answer && currentQuestion.answered ? <Icon>check</Icon> : null}</span>
                                         </label>
                                     </p>
                                 ])}
@@ -319,8 +319,8 @@ class Play extends React.Component {
                                                 onChange={(e) => this.setState({ [`answer_${k}`]: e.target.checked })}
                                                 filledIn
                                                 id={`answer_${k}`}
-                                                value={answer.title}
-                                                label={answer.title}
+                                                value={String(answer.title)}
+                                                label={String(answer.title)}
                                                 disabled={currentQuestion.answered}
                                             />{currentQuestion.answered && answer.answer ? <Icon>check</Icon> : null}
                                         </label>
@@ -359,13 +359,13 @@ class Play extends React.Component {
                                         <td className={"truncate " + (question.correct ? "green-text" : "red-text")}>
                                             {
                                                 question.answers.length <= 1 ? question.answers[0].insert :
-                                                    question.answers.filter(answer => answer.selected).map(answer => answer.title).join(", ")
+                                                    question.answers.filter(answer => answer.selected).map(answer => String(answer.title)).join(", ")
                                             }
                                         </td>
                                         <td className={"truncate"}>
                                             {
                                                 question.answers.length <= 1 ? question.answers[0].title :
-                                                    question.answers.filter(answer => answer.answer).map(answer => answer.title).join(", ")
+                                                    question.answers.filter(answer => answer.answer).map(answer => String(answer.title)).join(", ")
                                             }
                                         </td>
                                     </tr>)}
