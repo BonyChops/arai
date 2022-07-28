@@ -40,7 +40,7 @@
   "scripts": {
     "start": "react-scripts start",
     "start-screen": "screen -S react react-scripts start --host 100.115.92.195",
-    "build": "react-scripts build && rm -rf docs && cp -r build docs",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
