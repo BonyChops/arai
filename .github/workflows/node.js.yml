@@ -18,6 +18,9 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     strategy:
       matrix:
         node-version: [16.x]
@@ -25,6 +28,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Setup Pages
+      uses: actions/configure-pages@v1
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
@@ -41,12 +46,6 @@ jobs:
       uses: actions/upload-pages-artifact@v1
       with:
         # Upload entire repository
-        path: 'build'
-    - name: Setup Pages
-      uses: actions/configure-pages@v1
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v1
-      with:
         path: 'build'
     - name: Deploy to GitHub Pages
       id: deployment
