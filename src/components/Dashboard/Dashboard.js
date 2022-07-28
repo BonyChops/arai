@@ -48,10 +48,17 @@ class Dashboard extends React.Component {
             }
         }
         //console.log(await (await fetch(sampleYaml)).text())
-
-        M.textareaAutoResize(document.querySelector('textarea'));
+        setTimeout((() => {
+            try{
+                M.textareaAutoResize(document.querySelector('textarea#json-editor'));
+                M.textareaAutoResize(document.querySelector('textarea#yaml-editor'));
+                console.log("fix");
+            }catch(e){}
+        }), 500);
         console.log("Finished");
     }
+
+
 
     handleChange = (event, target, localChange = false) => {
         //console.log(target)
@@ -374,6 +381,7 @@ class Dashboard extends React.Component {
                                 onLabel="編集する"
                             /> : null}
                             <Textarea s={12}
+                                id="json-editor"
                                 value={this.state.jsonMinify ? this.state.jsonRaw : this.state.jsonBuffer}
                                 label={this.state.isJsonValid ? "" : "JSON構文に問題があります"}
                                 validate={true}
