@@ -15,8 +15,6 @@
     "materialize-css": "^1.0.0-rc.2",
     "moment": "^2.29.1",
     "node-fetch": "^2.6.1",
-    "nouislider": "^15.6.0",
-    "nouislider-react": "^3.4.1",
     "react": "^16.12.0",
     "react-circular-progressbar": "^2.0.4",
     "react-cookie": "^4.0.3",
