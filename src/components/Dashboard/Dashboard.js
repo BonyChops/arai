@@ -1,5 +1,5 @@
 import M from 'materialize-css';
-import { Button, Card, Row, Col, Container, Section, TextInput, Tab, Tabs, Textarea, Toast, Modal, Icon, Switch } from 'react-materialize';
+import { Button, Card, Row, Col, Container, Section, TextInput, Tab, Tabs, Textarea, Toast, Modal, Icon, Switch, Range } from 'react-materialize';
 import React from "react";
 import yaml from "js-yaml";
 import sampleYaml from "../../resources/sample.yml";
@@ -8,7 +8,8 @@ import { isMobile } from "react-device-detect";
 import NotFound from '../NotFound/NotFound';
 import { withRouter } from 'react-router';
 import { generateQuestionGist } from '../../functions/backup';
-
+import noUiSlider from "nouislider";
+import "../../nouislider.css"
 
 class Dashboard extends React.Component {
     constructor(props) {
@@ -47,13 +48,30 @@ class Dashboard extends React.Component {
                 this.generateJson();
             }
         }
+
+        const slider = document.querySelector('#question-range');
+
+        noUiSlider.create(slider, {
+            start: [20, 80],
+            connect: true,
+            step: 1,
+            orientation: 'horizontal', // 'horizontal' or 'vertical'
+            range: {
+                'min': 0,
+                'max': 100
+            },
+            format: window.wNumb({
+                decimals: 0
+              })
+        });
+
         //console.log(await (await fetch(sampleYaml)).text())
         setTimeout((() => {
-            try{
+            try {
                 M.textareaAutoResize(document.querySelector('textarea#json-editor'));
                 M.textareaAutoResize(document.querySelector('textarea#yaml-editor'));
                 console.log("fix");
-            }catch(e){}
+            } catch (e) { }
         }), 500);
         console.log("Finished");
     }
@@ -93,6 +111,7 @@ class Dashboard extends React.Component {
             this.props.accessor(state);
         }
         //this.generateJson(state);
+
         M.textareaAutoResize(document.querySelector('textarea'));
     }
 
@@ -308,12 +327,12 @@ class Dashboard extends React.Component {
                             <Button large waves="light" onClick={() => this.props.history.push(`/q/${this.props.state.id}/play`)}><Icon left>play_arrow</Icon>開始</Button>
                             <Button large flat onClick={() => {
                                 console.log(this.state.json);
-                                if(this.props.baseState.signedIn && !this.props.baseState.user.loginProblem){
+                                if (this.props.baseState.signedIn && !this.props.baseState.user.loginProblem) {
                                     generateQuestionGist(JSON.parse(this.state.json), (state) => this.props.baseAccessor(state))
-                                }else{
-                                    M.toast({html: "この機能を使うにはGitHubでログインしてください．"})
+                                } else {
+                                    M.toast({ html: "この機能を使うにはGitHubでログインしてください．" })
                                 }
-                                }}><Icon left>share</Icon></Button>
+                            }}><Icon left>share</Icon></Button>
                         </Col>
 
                     </Row>
@@ -353,6 +372,11 @@ class Dashboard extends React.Component {
                             title="記述式は自己採点する"
                         />
                     </Row> : null}
+                    <Row>
+                        <Col s={12} m={12}>
+                            <div id="question-range" style={this.state.showMore ? {} : { display: 'none' }}></div>
+                        </Col>
+                    </Row>
                     <br /><br />
                     <Tabs className='tab-demo z-depth-1 light-blue-text lighten-1' >
                         <Tab title="問題編集(yaml)">
