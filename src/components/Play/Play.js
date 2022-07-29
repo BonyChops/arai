@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Tex, InlineTex } from 'react-tex';
+import keyboardjs from "keyboardjs";
 
 const successMessages = [
     "Well done!",
@@ -76,8 +77,21 @@ class Play extends React.Component {
             disabledNext: false,
             emptyWarn: false
         }
-        console.log(this.state.questions)
+        console.log(this.state.questions);
+
+        keyboardjs.bind("right", () => {
+            const currentQuestion = this.state.questions[this.state.currentIndex];
+            if(currentQuestion?.answered){
+                this.checkAnswer(currentQuestion);
+            }
+        });
+
+        keyboardjs.bind("left", () => {
+            const currentQuestion = this.state.questions[this.state.currentIndex];
+            this.goBack(currentQuestion);
+        });
     }
+
     shuffle = (array) => {
         let currentIndex = array.length, temporaryValue, randomIndex;
         while (0 !== currentIndex) {
@@ -198,6 +212,9 @@ class Play extends React.Component {
     }
 
     goBack = () => {
+        if(this.state.currentIndex <= 0){
+            return;
+        }
         this.setState({
             currentIndex: this.state.currentIndex - 1,
             emptyWarn: false
