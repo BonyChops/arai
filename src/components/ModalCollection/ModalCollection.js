@@ -61,7 +61,7 @@ const ModalCollection = (props) => {
                             M.toast({html: "読み込めませんでした．"})
                         }
                     }}><Icon left>link</Icon>IDからインポート</Button>,
-                    <Button flat waves="light" onClick={() => getModal("#deleteWarn").close()}>閉じる</Button>
+                    <Button flat waves="light" onClick={() => getModal("#importLink").close()}>閉じる</Button>
                 ]}
                 bottomSheet={isMobile}>
                 <Row>
