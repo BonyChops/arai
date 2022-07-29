@@ -11,6 +11,7 @@
     "deepmerge": "^4.2.2",
     "firebase": "^8.6.3",
     "js-yaml": "^4.1.0",
+    "keyboardjs": "^2.6.4",
     "materialize-css": "^1.0.0-rc.2",
     "moment": "^2.29.1",
     "node-fetch": "^2.6.1",

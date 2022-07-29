@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Tex, InlineTex } from 'react-tex';
+import keyboardjs from "keyboardjs";
 
 const successMessages = [
     "Well done!",
@@ -76,8 +77,42 @@ class Play extends React.Component {
             disabledNext: false,
             emptyWarn: false
         }
-        console.log(this.state.questions)
+        console.log(this.state.questions);
+
+        keyboardjs.bind(["right"], () => {
+            const currentQuestion = this.state.questions[this.state.currentIndex];
+            if (currentQuestion?.answered && !currentQuestion.checkCorrect) {
+                this.checkAnswer(currentQuestion);
+            }
+        });
+
+        keyboardjs.bind(["n"], () => {
+            const currentQuestion = this.state.questions[this.state.currentIndex];
+            if (currentQuestion.checkCorrect) {
+                this.checkAnswer(currentQuestion, false);
+            }
+        });
+
+        keyboardjs.bind(["enter"], () => {
+            const currentQuestion = this.state.questions[this.state.currentIndex];
+            this.checkAnswer(currentQuestion, currentQuestion?.checkCorrect);
+
+        });
+
+        keyboardjs.bind("left", () => {
+            const currentQuestion = this.state.questions[this.state.currentIndex];
+            this.goBack(currentQuestion);
+        });
+
+
+
+        setTimeout(() => {
+            try {
+                document.querySelector("input#answer_0").focus();
+            } catch (e) { };
+        }, 100);
     }
+
     shuffle = (array) => {
         let currentIndex = array.length, temporaryValue, randomIndex;
         while (0 !== currentIndex) {
@@ -112,6 +147,9 @@ class Play extends React.Component {
 
 
     checkAnswer = (currentQuestion, forceCorrect = false) => {
+        if (currentQuestion === undefined) {
+            return;
+        }
         this.setState({
             emptyWarn: false
         });
@@ -119,7 +157,12 @@ class Play extends React.Component {
             this.setState({
                 currentIndex: this.state.currentIndex + 1,
                 emptyWarn: false
-            })
+            });
+            setTimeout(() => {
+                try {
+                    document.querySelector("input#answer_0").focus();
+                } catch (e) { };
+            }, 100);
             return;
         }
         const questions = this.state.questions;
@@ -135,6 +178,10 @@ class Play extends React.Component {
                 if (this.state[`answer_${0}`] === undefined || this.state[`answer_${0}`] === "") {
                     this.setState({ answer_0: "(自己採点)" });
                 }
+                const tmp = document.createElement("input");
+                document.body.appendChild(tmp);
+                tmp.focus();
+                document.body.removeChild(tmp);
                 return;
             } else {
                 question.checkCorrect = false;
@@ -193,15 +240,28 @@ class Play extends React.Component {
         for (let i = 0; i < currentQuestion.answers.length; i++) {
             result[`answer_${i}`] = "";
         }
-        result.questions = questions
+        result.questions = questions;
         this.setState(result);
+        const tmp = document.createElement("input");
+        document.body.appendChild(tmp);
+        tmp.focus();
+        document.body.removeChild(tmp);
+
     }
 
     goBack = () => {
+        if (this.state.currentIndex <= 0) {
+            return;
+        }
         this.setState({
             currentIndex: this.state.currentIndex - 1,
             emptyWarn: false
-        })
+        });
+        setTimeout(() => {
+            try {
+                document.querySelector("input#answer_0").focus();
+            } catch (e) { };
+        }, 100);
     }
 
     render() {
@@ -278,12 +338,12 @@ class Play extends React.Component {
                                         <Row>
                                             <Col s={6} m={4} offset="m2" className="align-center">
                                                 <Button className="white green-text" onClick={() => this.checkAnswer(currentQuestion, true)}>
-                                                    <Icon left>check</Icon>正解
+                                                    <Icon left>check</Icon>正解(ENTER)
                                                 </Button>
                                             </Col>
                                             <Col s={6} m={4} className="align-center">
                                                 <Button className="white red-text" onClick={() => this.checkAnswer(currentQuestion, false)}>
-                                                    <Icon left>close</Icon>不正解
+                                                    <Icon left>close</Icon>不正解(N)
                                                 </Button>
                                             </Col>
                                             <Col s={12} m={4} offset="m2">
@@ -383,7 +443,6 @@ class Play extends React.Component {
                                 <Button className="light-blue" onClick={() => getModal('#retryQuiz').open()}>全部やり直す</Button>
                             </Row>
                         </div>}
-
 
                     </Col>
                 </Row>
