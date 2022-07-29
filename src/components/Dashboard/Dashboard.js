@@ -1,5 +1,5 @@
 import M from 'materialize-css';
-import { Button, Card, Row, Col, Container, Section, TextInput, Tab, Tabs, Textarea, Toast, Modal, Icon, Switch } from 'react-materialize';
+import { Button, Card, Row, Col, Container, Section, TextInput, Tab, Tabs, Textarea, Toast, Modal, Icon, Switch, Range } from 'react-materialize';
 import React from "react";
 import yaml from "js-yaml";
 import sampleYaml from "../../resources/sample.yml";
@@ -49,11 +49,11 @@ class Dashboard extends React.Component {
         }
         //console.log(await (await fetch(sampleYaml)).text())
         setTimeout((() => {
-            try{
+            try {
                 M.textareaAutoResize(document.querySelector('textarea#json-editor'));
                 M.textareaAutoResize(document.querySelector('textarea#yaml-editor'));
                 console.log("fix");
-            }catch(e){}
+            } catch (e) { }
         }), 500);
         console.log("Finished");
     }
@@ -308,12 +308,12 @@ class Dashboard extends React.Component {
                             <Button large waves="light" onClick={() => this.props.history.push(`/q/${this.props.state.id}/play`)}><Icon left>play_arrow</Icon>開始</Button>
                             <Button large flat onClick={() => {
                                 console.log(this.state.json);
-                                if(this.props.baseState.signedIn && !this.props.baseState.user.loginProblem){
+                                if (this.props.baseState.signedIn && !this.props.baseState.user.loginProblem) {
                                     generateQuestionGist(JSON.parse(this.state.json), (state) => this.props.baseAccessor(state))
-                                }else{
-                                    M.toast({html: "この機能を使うにはGitHubでログインしてください．"})
+                                } else {
+                                    M.toast({ html: "この機能を使うにはGitHubでログインしてください．" })
                                 }
-                                }}><Icon left>share</Icon></Button>
+                            }}><Icon left>share</Icon></Button>
                         </Col>
 
                     </Row>
@@ -352,6 +352,25 @@ class Dashboard extends React.Component {
                             onLabel=""
                             title="記述式は自己採点する"
                         />
+                        <Col s={12}>
+                            <h5>終了位置</h5>
+                            <Range
+                                max={this.props.state.questions.length}
+                                min="1"
+                                name="points"
+                                step="1"
+                            />
+                        </Col>
+                        <Col s={12}>
+                            <h5>開始位置</h5>
+                            <Range
+                                max={this.props.state.questions.length}
+                                min="1"
+                                name="points"
+                                step="1"
+                                start="1"
+                            />
+                        </Col>
                     </Row> : null}
                     <br /><br />
                     <Tabs className='tab-demo z-depth-1 light-blue-text lighten-1' >
