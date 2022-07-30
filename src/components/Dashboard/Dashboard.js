@@ -306,14 +306,16 @@ class Dashboard extends React.Component {
                         </Col>
                         <Col s={12} m={6} >
                             <Button large waves="light" onClick={() => this.props.history.push(`/q/${this.props.state.id}/play`)}><Icon left>play_arrow</Icon>開始</Button>
-                            <Button large flat onClick={() => {
+
+                            {/* 共有ボタン */}
+                            {/* <Button large flat onClick={() => {
                                 console.log(this.state.json);
                                 if(this.props.baseState.signedIn && !this.props.baseState.user.loginProblem){
                                     generateQuestionGist(JSON.parse(this.state.json), (state) => this.props.baseAccessor(state))
                                 }else{
                                     M.toast({html: "この機能を使うにはGitHubでログインしてください．"})
                                 }
-                                }}><Icon left>share</Icon></Button>
+                                }}><Icon left>share</Icon></Button> */}
                         </Col>
 
                     </Row>
