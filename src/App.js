@@ -87,7 +87,6 @@ class App extends React.Component {
     return (
       <div className="App">
         <Auth setState={(state) => this.setState(state)} onLoggedIn={() => { githubSync(this.state, setState, true, true) }} />
-        <Router basename={process.env.PUBLIC_URL}>
           <Header openAccountMenu={openAccountMenu} state={this.state} accessor={(state) => this.setState(state)} />
           <Accounts state={this.state} accessor={(state) => this.setState(state)} />
           <Switch>
@@ -111,7 +110,6 @@ class App extends React.Component {
           </Switch>
           <Questions generateQuestion={this.generateQuestion} state={this.state} baseAccessor={(state) => this.setState(state)} />
           <ModalCollection state={this.state} generateQuestion={this.generateQuestion} />
-        </Router>
         {/*  <Footer /> */}
       </div >
     )

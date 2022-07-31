@@ -22,8 +22,8 @@ const successMessages = [
     "Superb!",
     "Cool!",
     "Good job!",
-    "You’re getting better!",
-    "You’re improving!",
+    "You're getting better!",
+    "You're improving!",
     "よくできました！",
     "さすが！",
     "超世紀誕生 ぱんぱかぱーん",
@@ -52,7 +52,8 @@ class Play extends React.Component {
     constructor(props) {
         super(props);
 
-        console.log(props)
+        console.log(props);
+        const pstate = props.state;
         if (this.props.state !== undefined) {
             if (this.props.state.questions.length <= 0) {
                 console.log(this.props.history)
@@ -63,9 +64,9 @@ class Play extends React.Component {
                 //M.Modal.getInstance(document.querySelector('#questions')).open()
             }
         }
-        const questions = props.state.questions.slice()
+        const questions = props.state.questions.slice();
         this.state = {
-            questions: (props.state.shuffleQuestions ? this.shuffle(questions) : questions).map(question => ({
+            questions: (pstate.shuffleQuestions ? this.shuffle(questions) : questions).slice(pstate.shuffleQuestions ? 0 : pstate.startPos - 1, pstate.endPos).map(question => ({
                 answers: (props.state.shuffleOptions ? this.shuffle(question.answers) : question.answers)
                     .map((option, k) => ((option.selected = false, option.key = k), option))
                     .filter(option => !this.props.state.hardMode || option.answer),
@@ -275,7 +276,7 @@ class Play extends React.Component {
                     <Col offset="m2" m={8} s={12}>
                         <Row>
                             <Col s={6}>
-                                <h6>{this.props.state.title} (<Link onClick={() => getModal("#backToEdit").open()}>編集</Link>)</h6>
+                                <h6>{this.props.state.title} (<a href="#" onClick={() => getModal("#backToEdit").open()}>編集</a>)</h6>
 
                             </Col>
                             {(this.state.currentIndex < this.state.questions.length) ? <Col s={6}>
@@ -457,8 +458,7 @@ class Play extends React.Component {
                         this.props.history.push(`/q/${this.props.state.id}`);
                         getModal("#backToEdit").close()
                     }}>編集へ移動</Button>,
-                ]}
-                bottomSheet={isMobile}>
+                ]}>
                 <Row>
                     現在の進捗は失われますがよろしいですか？
                 </Row>
@@ -473,8 +473,7 @@ class Play extends React.Component {
                         this.regenerateQuiz(false);
                         getModal("#retryQuiz").close()
                     }}>LET'S GO</Button>,
-                ]}
-                bottomSheet={isMobile}>
+                ]}>
                 <Row>
                     現在の進捗は失われますがよろしいですか？
                 </Row>
@@ -489,8 +488,7 @@ class Play extends React.Component {
                         this.regenerateQuiz(true);
                         getModal("#retryFailedQuiz").close()
                     }}>LET'S GO</Button>,
-                ]}
-                bottomSheet={isMobile}>
+                ]}>
                 <Row>
                     現在の進捗は失われますがよろしいですか？
                 </Row>

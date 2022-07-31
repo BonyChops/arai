@@ -1,5 +1,5 @@
 import M from 'materialize-css';
-import { Button, Card, Row, Col, Container, Section, TextInput, Tab, Tabs, Textarea, Toast, Modal, Icon, Switch } from 'react-materialize';
+import { Button, Card, Row, Col, Container, Section, TextInput, Tab, Tabs, Textarea, Toast, Modal, Icon, Switch, Range } from 'react-materialize';
 import React from "react";
 import yaml from "js-yaml";
 import sampleYaml from "../../resources/sample.yml";
@@ -49,20 +49,24 @@ class Dashboard extends React.Component {
         }
         //console.log(await (await fetch(sampleYaml)).text())
         setTimeout((() => {
-            try{
-                M.textareaAutoResize(document.querySelector('textarea#json-editor'));
-                M.textareaAutoResize(document.querySelector('textarea#yaml-editor'));
-                console.log("fix");
-            }catch(e){}
+            this.textareaAutoFix();
         }), 500);
+        setTimeout((() => {
+            this.textareaAutoFix();
+        }), 1000);
         console.log("Finished");
     }
 
-
+    textareaAutoFix = () => {
+        try {
+            M.textareaAutoResize(document.querySelector('textarea#json-editor'));
+            M.textareaAutoResize(document.querySelector('textarea#yaml-editor'));
+        } catch (e) { };
+    }
 
     handleChange = (event, target, localChange = false) => {
         //console.log(target)
-        const state = { [target]: (event.target.value) }
+        const state = { [target]: (event.target.value) };
         if (localChange) {
             this.setState(state)
         } else {
@@ -71,16 +75,27 @@ class Dashboard extends React.Component {
         this.generateJson({ [target]: (event.target.value) });
     }
 
-    handleChangeBool = (event, target, localChange = false) => {
-        const state = { [target]: (event.target.checked) }
-        console.log(state);
-        //(localChange ? this.setState : this.props.accessor)();
+    handleChangeNumber = (event, target, localChange = false) => {
+        //console.log(target)
+        const state = { [target]: Number(event.target.value) }
         if (localChange) {
             this.setState(state)
         } else {
             this.props.accessor(state);
         }
-        this.generateJson({ [target]: (event.target.checked) });
+        this.generateJson({ [target]: Number(event.target.value) });
+    }
+
+    handleChangeBool = (event, target, localChange = false) => {
+        const genState = () => ({ [target]: (event.target.checked) });
+        console.log(genState());
+        //(localChange ? this.setState : this.props.accessor)();
+        if (localChange) {
+            this.setState(genState());
+        } else {
+            this.props.accessor(genState());
+        }
+        this.generateJson(genState());
     }
 
     handleChangeToggle = (target, localChange = false) => {
@@ -94,6 +109,17 @@ class Dashboard extends React.Component {
         }
         //this.generateJson(state);
         M.textareaAutoResize(document.querySelector('textarea'));
+    }
+
+    handleChangeValue = (value, target, localChange = false) => {
+        //console.log(target)
+        const state = { [target]: value }
+        if (localChange) {
+            this.setState(state)
+        } else {
+            this.props.accessor(state);
+        }
+        this.generateJson({ [target]: value });
     }
 
     handleKeyDown = (e, title, localChange = false) => {
@@ -157,9 +183,14 @@ class Dashboard extends React.Component {
         this.deleteOptions(json);
 
         console.log(json);
-        this.setState({ isJsonValid: true });
-        this.setState({ json });
+        this.setState({ isJsonValid: true, json });
         this.props.accessor(json);
+        if (json.startPos === undefined) {
+            this.props.accessor({ startPos: 1 });
+        }
+        if (json.endPos === undefined) {
+            this.props.accessor({ startPos: json.questions.length });
+        }
         try {
             this.generateYaml(json.questions);
         } catch (e) {
@@ -191,14 +222,17 @@ class Dashboard extends React.Component {
             isYamlValid: true,
             yaml: yamlData,
         });
+        const questions = this.generateQuestions(yamlData)
         this.props.accessor({
-            questions: this.generateQuestions(yamlData)
+            questions,
+            startPos: 1,
+            endPos: questions.length
         })
         //console.log(this.generateQuestions(yamlData))
         this.generateJson({
             isYamlValid: true,
             yaml: yamlData,
-            questions: this.generateQuestions(yamlData)
+            questions,
         });
     }
 
@@ -310,10 +344,10 @@ class Dashboard extends React.Component {
                             {/* 共有ボタン */}
                             {/* <Button large flat onClick={() => {
                                 console.log(this.state.json);
-                                if(this.props.baseState.signedIn && !this.props.baseState.user.loginProblem){
+                                if (this.props.baseState.signedIn && !this.props.baseState.user.loginProblem) {
                                     generateQuestionGist(JSON.parse(this.state.json), (state) => this.props.baseAccessor(state))
-                                }else{
-                                    M.toast({html: "この機能を使うにはGitHubでログインしてください．"})
+                                } else {
+                                    M.toast({ html: "この機能を使うにはGitHubでログインしてください．" })
                                 }
                                 }}><Icon left>share</Icon></Button> */}
                         </Col>
@@ -321,43 +355,114 @@ class Dashboard extends React.Component {
                     </Row>
 
                     <Button flat waves="light" onClick={() => this.handleChangeToggle("showMore", true)}><Icon left>{!this.state.showMore ? "expand_more" : "expand_less"}</Icon>詳細設定</Button>
-                    {this.state.showMore ? <Row><br />
-                        <SwitchTemp
-                            id="soptions-switch"
-                            offLabel=""
-                            checked={this.props.state.shuffleOptions}
-                            onChange={(e) => this.handleChangeBool(e, "shuffleOptions")}
-                            onLabel=""
-                            title="選択肢の順番を入れ替える"
-                        />
-                        <SwitchTemp
-                            id="squestions-switch"
-                            offLabel=""
-                            checked={this.props.state.shuffleQuestions}
-                            onChange={(e) => this.handleChangeBool(e, "shuffleQuestions")}
-                            onLabel=""
-                            title="出題順を入れ替える"
-                        />
-                        <SwitchTemp
-                            id="hardmode-switch"
-                            offLabel=""
-                            checked={this.props.state.hardMode}
-                            onChange={(e) => this.handleChangeBool(e, "hardMode")}
-                            onLabel=""
-                            title="ハードモード"
-                        />
-                        <SwitchTemp
-                            id="manual-scoring-switch"
-                            offLabel=""
-                            checked={this.props.state.manualScoring}
-                            onChange={(e) => this.handleChangeBool(e, "manualScoring")}
-                            onLabel=""
-                            title="記述式は自己採点する"
-                        />
-                    </Row> : null}
+                    {this.state.showMore ? <div><br />
+                        <Row>
+                            <SwitchTemp
+                                id="soptions-switch"
+                                offLabel=""
+                                checked={this.props.state.shuffleOptions}
+                                onChange={(e) => this.handleChangeBool(e, "shuffleOptions")}
+                                onLabel=""
+                                title="選択肢の順番を入れ替える"
+                            />
+                            <SwitchTemp
+                                id="squestions-switch"
+                                offLabel=""
+                                checked={this.props.state.shuffleQuestions}
+                                onChange={(e) => this.handleChangeBool(e, "shuffleQuestions")}
+                                onLabel=""
+                                title="出題順を入れ替える"
+                            />
+                            <SwitchTemp
+                                id="hardmode-switch"
+                                offLabel=""
+                                checked={this.props.state.hardMode}
+                                onChange={(e) => this.handleChangeBool(e, "hardMode")}
+                                onLabel=""
+                                title="ハードモード"
+                            />
+                            <SwitchTemp
+                                id="manual-scoring-switch"
+                                offLabel=""
+                                checked={this.props.state.manualScoring}
+                                onChange={(e) => this.handleChangeBool(e, "manualScoring")}
+                                onLabel=""
+                                title="記述式は自己採点する"
+                            />
+                        </Row>
+                        <Row>
+                            {!this.props.state.shuffleQuestions && (<Col s={12} m={6}>
+                                <Row>
+                                    <Col s={6}>
+                                        <h5>開始位置</h5>
+                                    </Col>
+                                    <Col s={6} className="right-align">
+                                        <h5>{this.props.state.startPos} / {this.props.state.questions.length}</h5>
+                                        <p>{Math.round(this.props.state.startPos * 100 / this.props.state.questions.length)}%</p>
+                                    </Col>
+                                </Row>
+                                <p class="range-field">
+                                    <input
+                                        type="range"
+                                        max={this.props.state.questions.length}
+                                        min={1}
+                                        name="points"
+                                        id="start-pos"
+                                        step={1}
+                                        value={this.props.state.startPos}
+                                        onChange={e => {
+                                            const targetValue = Number(e.target.value);
+                                            if (targetValue > this.props.state.endPos) {
+                                                this.props.accessor({
+                                                    startPos: targetValue,
+                                                    endPos: targetValue
+                                                });
+                                            } else {
+                                                this.handleChangeNumber(e, "startPos");
+                                            }
+                                        }}
+                                    />
+                                </p>
+                            </Col>)}
+                            <Col s={12} m={this.props.state.shuffleQuestions ? 12 : 6}>
+                                <Row>
+                                    <Col s={6}>
+                                        <h5>{this.props.state.shuffleQuestions ? "出題数" : "終了位置"}</h5>
+                                    </Col>
+                                    <Col s={6} className="right-align">
+                                        <h5>{this.props.state.endPos} / {this.props.state.questions.length}</h5>
+                                        <p>{Math.round(this.props.state.endPos * 100 / this.props.state.questions.length)}%</p>
+                                    </Col>
+                                </Row>
+                                <p class="range-field">
+                                    <input
+                                        type="range"
+                                        max={this.props.state.questions.length}
+                                        min={1}
+                                        name="points"
+                                        id="end-pos"
+                                        step={1}
+                                        value={this.props.state.endPos}
+                                        onChange={e => {
+                                            const targetValue = Number(e.target.value);
+                                            if (targetValue < this.props.state.startPos) {
+                                                this.props.accessor({
+                                                    startPos: targetValue,
+                                                    endPos: targetValue
+                                                });
+                                            } else {
+                                                this.handleChangeNumber(e, "endPos");
+                                            }
+                                        }}
+                                    />
+                                </p>
+                            </Col>
+                            {!this.props.state.shuffleQuestions && <p className='right-align'>全体の出題数: {this.props.state.endPos - this.props.state.startPos + 1} / {this.props.state.questions.length}({Math.round((this.props.state.endPos - this.props.state.startPos) * 100 / this.props.state.questions.length)}%)</p>}
+                        </Row>
+                    </div> : null}
                     <br /><br />
-                    <Tabs className='tab-demo z-depth-1 light-blue-text lighten-1' >
-                        <Tab title="問題編集(yaml)">
+                    <Tabs className='tab-demo z-depth-1 light-blue-text lighten-1' onChange={() => setTimeout(() => { this.textareaAutoFix() }, 500)}>
+                        <Tab title="問題編集(yaml)" idx='tab-yaml-editor'>
                             <Textarea s={12} id="yaml-editor"
                                 label={this.state.isYamlValid ? "" : "YAML構文に問題があります"}
                                 value={this.state.yamlBuffer}
@@ -366,7 +471,7 @@ class Dashboard extends React.Component {
                                 onKeyDown={(e) => this.handleKeyDown(e, "yamlBuffer", true)}
                             />
                         </Tab>
-                        <Tab title="構成ファイル(JSON)" >
+                        <Tab title="構成ファイル(JSON)" idx='tab-json-editor'>
                             <br />
                             <Switch
                                 id="minify-switch"

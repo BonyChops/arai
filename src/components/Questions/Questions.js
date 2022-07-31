@@ -51,10 +51,10 @@ const Questions = (props) => {
                                 actions={[
                                     <Link key="play" to={`/q/${question.id}/play`} onClick={() => getModal("#questions").close()}><Icon>play_arrow</Icon></Link>,
                                     <Link key="edit" to={`/q/${question.id}`} onClick={() => getModal("#questions").close()}><Icon>edit</Icon></Link>,
-                                    <Link key="delete" onClick={() => {
+                                    <a href="#" key="delete" onClick={() => {
                                         setDeleteTarget(question);
                                         getModal("#deleteWarn").open();
-                                    }}><Icon>delete</Icon></Link>,
+                                    }}><Icon>delete</Icon></a>,
                                 ]}
                                 className=""
                                 closeIcon={<Icon>close</Icon>}
@@ -91,8 +91,7 @@ const Questions = (props) => {
                         getModal("#deleteWarn").close();
 
                     }}><Icon left>delete</Icon>完全に消す</Button>,
-                ]}
-                bottomSheet={isMobile}>
+                ]}>
                 <Row>
                     以下の問題を消します．本当によろしいですか？<br />
                     <Col m={6} s={12}>
