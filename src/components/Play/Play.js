@@ -52,7 +52,8 @@ class Play extends React.Component {
     constructor(props) {
         super(props);
 
-        console.log(props)
+        console.log(props);
+        const pstate = props.state;
         if (this.props.state !== undefined) {
             if (this.props.state.questions.length <= 0) {
                 console.log(this.props.history)
@@ -63,9 +64,9 @@ class Play extends React.Component {
                 //M.Modal.getInstance(document.querySelector('#questions')).open()
             }
         }
-        const questions = props.state.questions.slice()
+        const questions = props.state.questions.slice();
         this.state = {
-            questions: (props.state.shuffleQuestions ? this.shuffle(questions) : questions).map(question => ({
+            questions: (pstate.shuffleQuestions ? this.shuffle(questions) : questions).slice(pstate.shuffleQuestions ? 0 : pstate.startPos - 1, pstate.endPos).map(question => ({
                 answers: (props.state.shuffleOptions ? this.shuffle(question.answers) : question.answers)
                     .map((option, k) => ((option.selected = false, option.key = k), option))
                     .filter(option => !this.props.state.hardMode || option.answer),

@@ -49,16 +49,20 @@ class Dashboard extends React.Component {
         }
         //console.log(await (await fetch(sampleYaml)).text())
         setTimeout((() => {
-            try {
-                M.textareaAutoResize(document.querySelector('textarea#json-editor'));
-                M.textareaAutoResize(document.querySelector('textarea#yaml-editor'));
-                console.log("fix");
-            } catch (e) { }
+            this.textareaAutoFix();
         }), 500);
+        setTimeout((() => {
+            this.textareaAutoFix();
+        }), 1000);
         console.log("Finished");
     }
 
-
+    textareaAutoFix = () => {
+        try {
+            M.textareaAutoResize(document.querySelector('textarea#json-editor'));
+            M.textareaAutoResize(document.querySelector('textarea#yaml-editor'));
+        } catch (e) { };
+    }
 
     handleChange = (event, target, localChange = false) => {
         //console.log(target)
@@ -87,7 +91,7 @@ class Dashboard extends React.Component {
         console.log(genState());
         //(localChange ? this.setState : this.props.accessor)();
         if (localChange) {
-            this.setState(genState())
+            this.setState(genState());
         } else {
             this.props.accessor(genState());
         }
@@ -105,6 +109,17 @@ class Dashboard extends React.Component {
         }
         //this.generateJson(state);
         M.textareaAutoResize(document.querySelector('textarea'));
+    }
+
+    handleChangeValue = (value, target, localChange = false) => {
+        //console.log(target)
+        const state = { [target]: value }
+        if (localChange) {
+            this.setState(state)
+        } else {
+            this.props.accessor(state);
+        }
+        this.generateJson({ [target]: value });
     }
 
     handleKeyDown = (e, title, localChange = false) => {
@@ -170,6 +185,12 @@ class Dashboard extends React.Component {
         console.log(json);
         this.setState({ isJsonValid: true, json });
         this.props.accessor(json);
+        if (json.startPos === undefined) {
+            this.props.accessor({ startPos: 1 });
+        }
+        if (json.endPos === undefined) {
+            this.props.accessor({ startPos: json.questions.length });
+        }
         try {
             this.generateYaml(json.questions);
         } catch (e) {
@@ -368,13 +389,14 @@ class Dashboard extends React.Component {
                             />
                         </Row>
                         <Row>
-                            <Col s={12} m={6}>
+                            {!this.props.state.shuffleQuestions && (<Col s={12} m={6}>
                                 <Row>
                                     <Col s={6}>
                                         <h5>開始位置</h5>
                                     </Col>
                                     <Col s={6} className="right-align">
                                         <h5>{this.props.state.startPos} / {this.props.state.questions.length}</h5>
+                                        <p>{Math.round(this.props.state.startPos * 100 / this.props.state.questions.length)}%</p>
                                     </Col>
                                 </Row>
                                 <p class="range-field">
@@ -386,17 +408,28 @@ class Dashboard extends React.Component {
                                         id="start-pos"
                                         step={1}
                                         value={this.props.state.startPos}
-                                        onChange={e => this.handleChangeNumber(e, "startPos")}
+                                        onChange={e => {
+                                            const targetValue = Number(e.target.value);
+                                            if (targetValue > this.props.state.endPos) {
+                                                this.props.accessor({
+                                                    startPos: targetValue,
+                                                    endPos: targetValue
+                                                });
+                                            } else {
+                                                this.handleChangeNumber(e, "startPos");
+                                            }
+                                        }}
                                     />
                                 </p>
-                            </Col>
-                            <Col s={12} m={6}>
+                            </Col>)}
+                            <Col s={12} m={this.props.state.shuffleQuestions ? 12 : 6}>
                                 <Row>
                                     <Col s={6}>
-                                        <h5>終了位置位置</h5>
+                                        <h5>{this.props.state.shuffleQuestions ? "出題数" : "終了位置"}</h5>
                                     </Col>
                                     <Col s={6} className="right-align">
                                         <h5>{this.props.state.endPos} / {this.props.state.questions.length}</h5>
+                                        <p>{Math.round(this.props.state.endPos * 100 / this.props.state.questions.length)}%</p>
                                     </Col>
                                 </Row>
                                 <p class="range-field">
@@ -408,15 +441,26 @@ class Dashboard extends React.Component {
                                         id="end-pos"
                                         step={1}
                                         value={this.props.state.endPos}
-                                        onChange={e => this.handleChangeNumber(e, "endPos")}
+                                        onChange={e => {
+                                            const targetValue = Number(e.target.value);
+                                            if (targetValue < this.props.state.startPos) {
+                                                this.props.accessor({
+                                                    startPos: targetValue,
+                                                    endPos: targetValue
+                                                });
+                                            } else {
+                                                this.handleChangeNumber(e, "endPos");
+                                            }
+                                        }}
                                     />
                                 </p>
                             </Col>
+                            {!this.props.state.shuffleQuestions && <p className='right-align'>全体の出題数: {this.props.state.endPos - this.props.state.startPos + 1} / {this.props.state.questions.length}({Math.round((this.props.state.endPos - this.props.state.startPos) * 100 / this.props.state.questions.length)}%)</p>}
                         </Row>
                     </div> : null}
                     <br /><br />
-                    <Tabs className='tab-demo z-depth-1 light-blue-text lighten-1' >
-                        <Tab title="問題編集(yaml)">
+                    <Tabs className='tab-demo z-depth-1 light-blue-text lighten-1' onChange={() => setTimeout(() => { this.textareaAutoFix() }, 500)}>
+                        <Tab title="問題編集(yaml)" idx='tab-yaml-editor'>
                             <Textarea s={12} id="yaml-editor"
                                 label={this.state.isYamlValid ? "" : "YAML構文に問題があります"}
                                 value={this.state.yamlBuffer}
@@ -425,7 +469,7 @@ class Dashboard extends React.Component {
                                 onKeyDown={(e) => this.handleKeyDown(e, "yamlBuffer", true)}
                             />
                         </Tab>
-                        <Tab title="構成ファイル(JSON)" >
+                        <Tab title="構成ファイル(JSON)" idx='tab-json-editor'>
                             <br />
                             <Switch
                                 id="minify-switch"
