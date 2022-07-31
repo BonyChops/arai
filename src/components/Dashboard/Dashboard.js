@@ -457,7 +457,7 @@ class Dashboard extends React.Component {
                                     />
                                 </p>
                             </Col>
-                            {!this.props.state.shuffleQuestions && <p className='right-align'>全体の出題数: {this.props.state.endPos - this.props.state.startPos + 1} / {this.props.state.questions.length}({Math.round((this.props.state.endPos - this.props.state.startPos) * 100 / this.props.state.questions.length)}%)</p>}
+                            {!this.props.state.shuffleQuestions && <p className='right-align'>全体の出題数: {this.props.state.endPos - this.props.state.startPos + 1} / {this.props.state.questions.length}({Math.round((this.props.state.endPos - this.props.state.startPos + 1) * 100 / this.props.state.questions.length)}%)</p>}
                         </Row>
                     </div> : null}
                     <br /><br />
