@@ -33,11 +33,13 @@ class Dashboard extends React.Component {
             return;
         }
         if (this.props.state.challengeJson !== false) {
-            console.log("Challenging")
-            this.tryEditJson(JSON.stringify(this.props.state.challengeJson), true, true);
-            this.props.accessor({
-                challengeJson: false
-            })
+            console.log("Challenging");
+            setTimeout(() => {
+                this.tryEditJson(JSON.stringify(this.props.state.challengeJson), true, true);
+                this.props.accessor({
+                    challengeJson: false
+                });
+            }, 200);
         } else {
             if (this.props.state.questions.length <= 0) {
                 this.tryEditYaml(await (await fetch(sampleYaml)).text(), true, true);
@@ -457,7 +459,7 @@ class Dashboard extends React.Component {
                                     />
                                 </p>
                             </Col>
-                            {!this.props.state.shuffleQuestions && <p className='right-align'>全体の出題数: {this.props.state.endPos - this.props.state.startPos + 1} / {this.props.state.questions.length}({Math.round((this.props.state.endPos - this.props.state.startPos) * 100 / this.props.state.questions.length)}%)</p>}
+                            {!this.props.state.shuffleQuestions && <p className='right-align'>全体の出題数: {this.props.state.endPos - this.props.state.startPos + 1} / {this.props.state.questions.length}({Math.round((this.props.state.endPos - this.props.state.startPos + 1) * 100 / this.props.state.questions.length)}%)</p>}
                         </Row>
                     </div> : null}
                     <br /><br />
