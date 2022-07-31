@@ -62,7 +62,7 @@ class Dashboard extends React.Component {
 
     handleChange = (event, target, localChange = false) => {
         //console.log(target)
-        const state = { [target]: (event.target.value) }
+        const state = { [target]: (event.target.value) };
         if (localChange) {
             this.setState(state)
         } else {
@@ -71,16 +71,27 @@ class Dashboard extends React.Component {
         this.generateJson({ [target]: (event.target.value) });
     }
 
-    handleChangeBool = (event, target, localChange = false) => {
-        const state = { [target]: (event.target.checked) }
-        console.log(state);
-        //(localChange ? this.setState : this.props.accessor)();
+    handleChangeNumber = (event, target, localChange = false) => {
+        //console.log(target)
+        const state = { [target]: Number(event.target.value) }
         if (localChange) {
             this.setState(state)
         } else {
             this.props.accessor(state);
         }
-        this.generateJson({ [target]: (event.target.checked) });
+        this.generateJson({ [target]: Number(event.target.value) });
+    }
+
+    handleChangeBool = (event, target, localChange = false) => {
+        const genState = () => ({ [target]: (event.target.checked) });
+        console.log(genState());
+        //(localChange ? this.setState : this.props.accessor)();
+        if (localChange) {
+            this.setState(genState())
+        } else {
+            this.props.accessor(genState());
+        }
+        this.generateJson(genState());
     }
 
     handleChangeToggle = (target, localChange = false) => {
@@ -157,8 +168,7 @@ class Dashboard extends React.Component {
         this.deleteOptions(json);
 
         console.log(json);
-        this.setState({ isJsonValid: true });
-        this.setState({ json });
+        this.setState({ isJsonValid: true, json });
         this.props.accessor(json);
         try {
             this.generateYaml(json.questions);
@@ -191,14 +201,17 @@ class Dashboard extends React.Component {
             isYamlValid: true,
             yaml: yamlData,
         });
+        const questions = this.generateQuestions(yamlData)
         this.props.accessor({
-            questions: this.generateQuestions(yamlData)
+            questions,
+            startPos: 1,
+            endPos: questions.length
         })
         //console.log(this.generateQuestions(yamlData))
         this.generateJson({
             isYamlValid: true,
             yaml: yamlData,
-            questions: this.generateQuestions(yamlData)
+            questions,
         });
     }
 
@@ -319,59 +332,88 @@ class Dashboard extends React.Component {
                     </Row>
 
                     <Button flat waves="light" onClick={() => this.handleChangeToggle("showMore", true)}><Icon left>{!this.state.showMore ? "expand_more" : "expand_less"}</Icon>詳細設定</Button>
-                    {this.state.showMore ? <Row><br />
-                        <SwitchTemp
-                            id="soptions-switch"
-                            offLabel=""
-                            checked={this.props.state.shuffleOptions}
-                            onChange={(e) => this.handleChangeBool(e, "shuffleOptions")}
-                            onLabel=""
-                            title="選択肢の順番を入れ替える"
-                        />
-                        <SwitchTemp
-                            id="squestions-switch"
-                            offLabel=""
-                            checked={this.props.state.shuffleQuestions}
-                            onChange={(e) => this.handleChangeBool(e, "shuffleQuestions")}
-                            onLabel=""
-                            title="出題順を入れ替える"
-                        />
-                        <SwitchTemp
-                            id="hardmode-switch"
-                            offLabel=""
-                            checked={this.props.state.hardMode}
-                            onChange={(e) => this.handleChangeBool(e, "hardMode")}
-                            onLabel=""
-                            title="ハードモード"
-                        />
-                        <SwitchTemp
-                            id="manual-scoring-switch"
-                            offLabel=""
-                            checked={this.props.state.manualScoring}
-                            onChange={(e) => this.handleChangeBool(e, "manualScoring")}
-                            onLabel=""
-                            title="記述式は自己採点する"
-                        />
-                        <Col s={12}>
-                            <h5>終了位置</h5>
-                            <Range
-                                max={this.props.state.questions.length}
-                                min="1"
-                                name="points"
-                                step="1"
+                    {this.state.showMore ? <div><br />
+                        <Row>
+                            <SwitchTemp
+                                id="soptions-switch"
+                                offLabel=""
+                                checked={this.props.state.shuffleOptions}
+                                onChange={(e) => this.handleChangeBool(e, "shuffleOptions")}
+                                onLabel=""
+                                title="選択肢の順番を入れ替える"
                             />
-                        </Col>
-                        <Col s={12}>
-                            <h5>開始位置</h5>
-                            <Range
-                                max={this.props.state.questions.length}
-                                min="1"
-                                name="points"
-                                step="1"
-                                start="1"
+                            <SwitchTemp
+                                id="squestions-switch"
+                                offLabel=""
+                                checked={this.props.state.shuffleQuestions}
+                                onChange={(e) => this.handleChangeBool(e, "shuffleQuestions")}
+                                onLabel=""
+                                title="出題順を入れ替える"
                             />
-                        </Col>
-                    </Row> : null}
+                            <SwitchTemp
+                                id="hardmode-switch"
+                                offLabel=""
+                                checked={this.props.state.hardMode}
+                                onChange={(e) => this.handleChangeBool(e, "hardMode")}
+                                onLabel=""
+                                title="ハードモード"
+                            />
+                            <SwitchTemp
+                                id="manual-scoring-switch"
+                                offLabel=""
+                                checked={this.props.state.manualScoring}
+                                onChange={(e) => this.handleChangeBool(e, "manualScoring")}
+                                onLabel=""
+                                title="記述式は自己採点する"
+                            />
+                        </Row>
+                        <Row>
+                            <Col s={12} m={6}>
+                                <Row>
+                                    <Col s={6}>
+                                        <h5>開始位置</h5>
+                                    </Col>
+                                    <Col s={6} className="right-align">
+                                        <h5>{this.props.state.startPos} / {this.props.state.questions.length}</h5>
+                                    </Col>
+                                </Row>
+                                <p class="range-field">
+                                    <input
+                                        type="range"
+                                        max={this.props.state.questions.length}
+                                        min={1}
+                                        name="points"
+                                        id="start-pos"
+                                        step={1}
+                                        value={this.props.state.startPos}
+                                        onChange={e => this.handleChangeNumber(e, "startPos")}
+                                    />
+                                </p>
+                            </Col>
+                            <Col s={12} m={6}>
+                                <Row>
+                                    <Col s={6}>
+                                        <h5>終了位置位置</h5>
+                                    </Col>
+                                    <Col s={6} className="right-align">
+                                        <h5>{this.props.state.endPos} / {this.props.state.questions.length}</h5>
+                                    </Col>
+                                </Row>
+                                <p class="range-field">
+                                    <input
+                                        type="range"
+                                        max={this.props.state.questions.length}
+                                        min={1}
+                                        name="points"
+                                        id="end-pos"
+                                        step={1}
+                                        value={this.props.state.endPos}
+                                        onChange={e => this.handleChangeNumber(e, "endPos")}
+                                    />
+                                </p>
+                            </Col>
+                        </Row>
+                    </div> : null}
                     <br /><br />
                     <Tabs className='tab-demo z-depth-1 light-blue-text lighten-1' >
                         <Tab title="問題編集(yaml)">
