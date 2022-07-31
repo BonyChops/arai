@@ -23,8 +23,7 @@ const ModalCollection = (props) => {
                 fixedFooter={isMobile}
                 actions={[
                     <Button flat waves="light" onClick={() => getModal("#deleteWarn").close()}>閉じる</Button>,
-                ]}
-                bottomSheet={isMobile}>
+                ]}>
                 <Row>
                     <p>問題を共有する準備ができました．以下のIDを共有したい相手に送信してください．もしくは，以下のリンクを教えると直接アクセスしてもらえるようになります．<br />
                         <span className="red-text">このウィンドウを閉じると表示できません．</span></p>
@@ -62,8 +61,7 @@ const ModalCollection = (props) => {
                         }
                     }}><Icon left>link</Icon>IDからインポート</Button>,
                     <Button flat waves="light" onClick={() => getModal("#deleteWarn").close()}>閉じる</Button>
-                ]}
-                bottomSheet={isMobile}>
+                ]}>
                 <Row>
                     <p>インポートするIDを入力してください</p>
                     <Row>
