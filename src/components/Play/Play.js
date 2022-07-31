@@ -9,6 +9,7 @@ import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Tex, InlineTex } from 'react-tex';
 import keyboardjs from "keyboardjs";
+import moment from "moment";
 
 const successMessages = [
     "Well done!",
@@ -65,7 +66,7 @@ class Play extends React.Component {
             }
         }
         const questions = props.state.questions.slice();
-        this.state = {
+        this.state = props.playState === undefined ? {
             questions: (pstate.shuffleQuestions ? this.shuffle(questions) : questions).slice(pstate.shuffleQuestions ? 0 : pstate.startPos - 1, pstate.endPos).map(question => ({
                 answers: (props.state.shuffleOptions ? this.shuffle(question.answers) : question.answers)
                     .map((option, k) => ((option.selected = false, option.key = k), option))
@@ -76,8 +77,12 @@ class Play extends React.Component {
             })),
             currentIndex: 0,
             disabledNext: false,
-            emptyWarn: false
-        }
+            emptyWarn: false,
+            shuffleQuestions: pstate.shuffleQuestions,
+            hardMode: this.props.state.hardMode,
+            manualScoring: this.props.state.manualScoring
+        } : this.props.playState;
+        console.log(props.state.playState);
         console.log(this.state.questions);
 
         keyboardjs.bind(["right"], () => {
@@ -112,6 +117,16 @@ class Play extends React.Component {
                 document.querySelector("input#answer_0").focus();
             } catch (e) { };
         }, 100);
+    }
+
+    componentDidMount = () => {
+        if (this.props.playState !== undefined) {
+            M.toast({ html: `${moment(this.props.playState.recordedAt).format("YYYY/MM/DD HH:mm:ss")}のプレイ状況をリストアしました` });
+        }
+    }
+
+    loadFromRecordedState = () => {
+        this.setState(this.props.playState);
     }
 
     shuffle = (array) => {
@@ -161,6 +176,7 @@ class Play extends React.Component {
             });
             setTimeout(() => {
                 try {
+                    this.props.playStateAccessor(this.state);
                     document.querySelector("input#answer_0").focus();
                 } catch (e) { };
             }, 100);
@@ -247,7 +263,10 @@ class Play extends React.Component {
         document.body.appendChild(tmp);
         tmp.focus();
         document.body.removeChild(tmp);
-
+        console.log("aa");
+        setTimeout(() => {
+            this.props.playStateAccessor(this.state);
+        }, 200);
     }
 
     goBack = () => {
@@ -262,7 +281,8 @@ class Play extends React.Component {
             try {
                 document.querySelector("input#answer_0").focus();
             } catch (e) { };
-        }, 100);
+        }, 200);
+        this.props.playStateAccessor(this.state);
     }
 
     render() {
@@ -276,7 +296,7 @@ class Play extends React.Component {
                     <Col offset="m2" m={8} s={12}>
                         <Row>
                             <Col s={6}>
-                                <h6>{this.props.state.title} (<a href="#" onClick={() => getModal("#backToEdit").open()}>編集</a>)</h6>
+                                <h6>{this.props.state.title} (<Link to={`/q/${this.props.state.id}`}>編集</Link>)</h6>
 
                             </Col>
                             {(this.state.currentIndex < this.state.questions.length) ? <Col s={6}>
