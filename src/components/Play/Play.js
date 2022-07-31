@@ -454,7 +454,7 @@ class Play extends React.Component {
                 actions={[
                     <Button flat waves="light" onClick={() => getModal("#backToEdit").close()}>キャンセル</Button>,
                     <Button flat waves="light" className="orange-text" onClick={() => {
-                        //this.props.history.push(`/q/${this.props.state.id}`);
+                        this.props.history.push(`/q/${this.props.state.id}`);
                         getModal("#backToEdit").close()
                     }}>編集へ移動</Button>,
                 ]}>
