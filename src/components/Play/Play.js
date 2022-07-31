@@ -22,8 +22,8 @@ const successMessages = [
     "Superb!",
     "Cool!",
     "Good job!",
-    "You’re getting better!",
-    "You’re improving!",
+    "You're getting better!",
+    "You're improving!",
     "よくできました！",
     "さすが！",
     "超世紀誕生 ぱんぱかぱーん",
@@ -275,7 +275,7 @@ class Play extends React.Component {
                     <Col offset="m2" m={8} s={12}>
                         <Row>
                             <Col s={6}>
-                                <h6>{this.props.state.title} (<Link onClick={() => getModal("#backToEdit").open()}>編集</Link>)</h6>
+                                <h6>{this.props.state.title} (<a href="#" onClick={() => getModal("#backToEdit").open()}>編集</a>)</h6>
 
                             </Col>
                             {(this.state.currentIndex < this.state.questions.length) ? <Col s={6}>
@@ -454,11 +454,10 @@ class Play extends React.Component {
                 actions={[
                     <Button flat waves="light" onClick={() => getModal("#backToEdit").close()}>キャンセル</Button>,
                     <Button flat waves="light" className="orange-text" onClick={() => {
-                        this.props.history.push(`/q/${this.props.state.id}`);
+                        //this.props.history.push(`/q/${this.props.state.id}`);
                         getModal("#backToEdit").close()
                     }}>編集へ移動</Button>,
-                ]}
-                bottomSheet={isMobile}>
+                ]}>
                 <Row>
                     現在の進捗は失われますがよろしいですか？
                 </Row>
@@ -473,8 +472,7 @@ class Play extends React.Component {
                         this.regenerateQuiz(false);
                         getModal("#retryQuiz").close()
                     }}>LET'S GO</Button>,
-                ]}
-                bottomSheet={isMobile}>
+                ]}>
                 <Row>
                     現在の進捗は失われますがよろしいですか？
                 </Row>
@@ -489,8 +487,7 @@ class Play extends React.Component {
                         this.regenerateQuiz(true);
                         getModal("#retryFailedQuiz").close()
                     }}>LET'S GO</Button>,
-                ]}
-                bottomSheet={isMobile}>
+                ]}>
                 <Row>
                     現在の進捗は失われますがよろしいですか？
                 </Row>
