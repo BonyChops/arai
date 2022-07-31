@@ -43,10 +43,12 @@ class App extends React.Component {
     }, 10000)
   }
 
-  accessor = (state, id = this.props.currentId) => {
-    const keyName = `question_${id}`;
+  accessor = (state, id = this.props.currentId, prefix) => {
+    const keyName = `${prefix}_${id}`;
     //console.log(state);
-    const question = this.state[keyName];
+    const question = this.state[`question_${id}`];
+    console.log(question);
+    console.log(keyName);
     if (question === undefined) return false;
     this.setState({
       [keyName]: merge(
@@ -54,7 +56,15 @@ class App extends React.Component {
         state,
         { arrayMerge: (destinationArray, sourceArray, options) => sourceArray }
       )
+    });
+    console.log({
+      [keyName]: merge(
+        (this.state[keyName] === undefined ? {} : this.state[keyName]),
+        state,
+        { arrayMerge: (destinationArray, sourceArray, options) => sourceArray }
+      )
     })
+    console.log(this.state);
   }
 
   generateQuestion = (json = false) => {
@@ -95,7 +105,9 @@ class App extends React.Component {
               render={(props) => <Play
                 key={props.match.params.id}
                 state={this.state[`question_${props.match.params.id}`]}
-                accessor={(state) => this.accessor(state, props.match.params.id)}
+                accessor={(state) => this.accessor(state, props.match.params.id, 'question')}
+                playStateAccessor={(state) => this.accessor({...state, recordedAt: new Date()}, props.match.params.id, 'playState')}
+                playState={this.state[`playState_${props.match.params.id}`]}
                 baseAccessor={this.setState}
               />} />
             <Route exact path="/q/:id"
@@ -103,7 +115,7 @@ class App extends React.Component {
                 key={props.match.params.id}
                 state={this.state[`question_${props.match.params.id}`]}
                 baseState={this.state}
-                accessor={(state) => this.accessor(state, props.match.params.id)}
+                accessor={(state) => this.accessor(state, props.match.params.id, 'question')}
                 baseAccessor={(state) => this.setState(state)}
               />} />
             <Route render={() => <NotFound />} />

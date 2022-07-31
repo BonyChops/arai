@@ -8,7 +8,9 @@ import { isMobile } from "react-device-detect";
 import NotFound from '../NotFound/NotFound';
 import { withRouter } from 'react-router';
 import { generateQuestionGist } from '../../functions/backup';
+import moment from "moment";
 
+const getModal = (name) => (M.Modal.getInstance(document.querySelector(name)));
 
 class Dashboard extends React.Component {
     constructor(props) {
@@ -341,7 +343,13 @@ class Dashboard extends React.Component {
                             <TextInput s={12} label="Description" validate id="description" value={this.props.state.description} onChange={(e) => this.handleChange(e, "description")} />
                         </Col>
                         <Col s={12} m={6} >
-                            <Button large waves="light" onClick={() => this.props.history.push(`/q/${this.props.state.id}/play`)}><Icon left>play_arrow</Icon>開始</Button>
+                            <Button large waves="light" onClick={() => {
+                                if (this.props.baseState[`playState_${this.props.state.id}`] !== undefined) {
+                                    getModal("#restorePlayState").open();
+                                } else {
+                                    this.props.history.push(`/q/${this.props.state.id}/play`);
+                                }
+                            }}><Icon left>play_arrow</Icon>開始</Button>
 
                             {/* 共有ボタン */}
                             {/* <Button large flat onClick={() => {
@@ -508,6 +516,42 @@ class Dashboard extends React.Component {
                         <Tab title="GUI編集(開発中)" disabled>Test 2</Tab>
                     </Tabs>
                 </Container>}
+                <Modal
+                    id='restorePlayState'
+                    header='進捗のリストア'
+                    bottomSheet={isMobile}
+                    actions={[
+                        <Button flat waves="light" onClick={() => getModal("#restorePlayState").close()}>キャンセル</Button>,
+                        <Button flat waves="light" className="red-text" onClick={() => {
+                            getModal("#restorePlayState").close();
+                            this.props.baseAccessor({
+                                [`playState_${this.props.state.id}`]: undefined
+                            });
+                            console.log(this.props.baseState);
+                            this.props.history.push(`/q/${this.props.state.id}/play`);
+                        }}><Icon left>refresh</Icon>はじめから</Button>,
+                        <Button waves="light" className="orange" onClick={() => {
+                            this.props.history.push(`/q/${this.props.state.id}/play`);
+                            getModal("#restorePlayState").close();
+                        }}><Icon left>play_arrow</Icon>リストア</Button>,
+                    ]}>
+                    <Row>
+                        以下の記録された進捗があります．リストアしますか？<br />
+                        <Col m={6} s={12}>
+                            <Card
+                                title={`${moment(this.props.baseState[`playState_${this.props.state.id}`]?.recorded).format("YYYY/MM/DD HH:mm:ss")}のプレイ状況`}
+                            >
+                                回答済み: {this.props.baseState[`playState_${this.props.state.id}`]?.questions?.filter(v => v.answered).length} / {this.props.baseState[`playState_${this.props.state.id}`]?.questions?.length}
+                                <br />
+                                出題順の入れ替え: {this.props.baseState[`playState_${this.props.state.id}`]?.shuffleQuestions ? "有効" : "無効"}
+                                <br />
+                                ハードモード: {this.props.baseState[`playState_${this.props.state.id}`]?.hardMode ? "有効" : "無効"}
+                                <br />
+                                自己採点: {this.props.baseState[`playState_${this.props.state.id}`]?.manualScoring ? "有効" : "無効"}
+                            </Card>
+                        </Col>
+                    </Row>
+                </Modal>
             </Section>
         )
     }
