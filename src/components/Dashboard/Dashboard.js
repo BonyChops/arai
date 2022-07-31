@@ -33,11 +33,13 @@ class Dashboard extends React.Component {
             return;
         }
         if (this.props.state.challengeJson !== false) {
-            console.log("Challenging")
-            this.tryEditJson(JSON.stringify(this.props.state.challengeJson), true, true);
-            this.props.accessor({
-                challengeJson: false
-            })
+            console.log("Challenging");
+            setTimeout(() => {
+                this.tryEditJson(JSON.stringify(this.props.state.challengeJson), true, true);
+                this.props.accessor({
+                    challengeJson: false
+                });
+            }, 200);
         } else {
             if (this.props.state.questions.length <= 0) {
                 this.tryEditYaml(await (await fetch(sampleYaml)).text(), true, true);
