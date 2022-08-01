@@ -520,6 +520,7 @@ class Dashboard extends React.Component {
                     id='restorePlayState'
                     header='進捗のリストア'
                     bottomSheet={isMobile}
+                    fixedFooter={isMobile}
                     actions={[
                         <Button flat waves="light" onClick={() => getModal("#restorePlayState").close()}>キャンセル</Button>,
                         <Button flat waves="light" className="red-text" onClick={() => {
