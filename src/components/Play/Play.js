@@ -486,6 +486,7 @@ class Play extends React.Component {
             <Modal
                 id='retryQuiz'
                 header='問題をやり直す'
+                fixedFooter={isMobile}
                 bottomSheet={isMobile}
                 actions={[
                     <Button flat waves="light" onClick={() => getModal("#retryQuiz").close()}>キャンセル</Button>,
@@ -501,6 +502,7 @@ class Play extends React.Component {
             <Modal
                 id='retryFailedQuiz'
                 header='間違えた問題をやり直す'
+                fixedFooter={isMobile}
                 bottomSheet={isMobile}
                 actions={[
                     <Button flat waves="light" onClick={() => getModal("#retryFailedQuiz").close()}>キャンセル</Button>,
