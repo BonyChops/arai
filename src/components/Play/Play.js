@@ -409,10 +409,10 @@ class Play extends React.Component {
                                 ])}
                             </Row>}</div> : <div>
                             <Row>
-                                <Col s={8}>
+                                <Col m={8} s={12}>
                                     <h2 className="green-text"><Icon medium left>check</Icon>お疲れ様！</h2>
                                 </Col>
-                                <Col s={4}>
+                                <Col m={4} s={6} offset="s3">
                                     <CircularProgressbar value={Math.round(this.state.questions.filter(question => question.correct).length * 100 / this.state.questions.length)}
                                         text={`${Math.round(this.state.questions.filter(question => question.correct).length * 100 / this.state.questions.length)}%`} />
                                     <h5 className="center">{this.state.questions.filter(question => question.correct).length} / {this.state.questions.length}</h5>
@@ -460,8 +460,8 @@ class Play extends React.Component {
                                     } else {
                                         getModal('#retryFailedQuiz').open();
                                     }
-                                }} style={{ marginRight: "25px" }}>間違えた問題だけやり直す</Button>
-                                <Button className="light-blue" onClick={() => getModal('#retryQuiz').open()}>全部やり直す</Button>
+                                }} style={{ marginTop: "10px" }}>間違えた問題だけやり直す</Button>
+                                <Button className="light-blue" style={{ marginLeft: "25px", marginTop: "10px" }} onClick={() => getModal('#retryQuiz').open()}>全部やり直す</Button>
                             </Row>
                         </div>}
 
