@@ -66,9 +66,19 @@ class Play extends React.Component {
             }
         }
         const questions = props.state.questions.slice();
+        const nonOptionQuestions = questions.filter(q => q.answers.length <= 1);
         this.state = props.playState === undefined ? {
-            questions: (pstate.shuffleQuestions ? this.shuffle(questions) : questions).slice(pstate.shuffleQuestions ? 0 : pstate.startPos - 1, pstate.endPos).map(question => ({
-                answers: (props.state.shuffleOptions ? this.shuffle(question.answers) : question.answers)
+            questions: (pstate.shuffleQuestions ? this.shuffle(questions) : questions).slice(pstate.shuffleQuestions ? 0 : pstate.startPos - 1, pstate.endPos).map((question) => ({
+                answers: ((pstate.randomAnswerOptions && question.answers.length <= 1) ?
+                    this.shuffle([...question.answers.map(a => { const ca = { ...a }; ca.answer = true; return ca; }), ...this.shuffle(nonOptionQuestions
+                        .map(q => { q.answers.forEach(a => a.answer = false); return q.answers })
+                        .reduce((acc, v) => ([...acc, ...v]), [])
+                        .filter(a => a.title !== question.answers[0].title))
+                        .slice(0, this.props.state.maxOptionNumber - 1)]) :
+                    (props.state.shuffleOptions ?
+                        this.shuffle(question.answers) :
+                        question.answers)
+                )
                     .map((option, k) => ((option.selected = false, option.key = k), option))
                     .filter(option => !this.props.state.hardMode || option.answer),
                 title: question.title,
@@ -80,7 +90,8 @@ class Play extends React.Component {
             emptyWarn: false,
             shuffleQuestions: pstate.shuffleQuestions,
             hardMode: this.props.state.hardMode,
-            manualScoring: this.props.state.manualScoring
+            manualScoring: this.props.state.manualScoring,
+            randomAnswerOptions: this.props.state.randomAnswerOptions
         } : this.props.playState;
         console.log(props.state.playState);
         console.log(this.state.questions);

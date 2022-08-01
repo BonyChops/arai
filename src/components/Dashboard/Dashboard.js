@@ -26,6 +26,7 @@ class Dashboard extends React.Component {
             jsonMinify: false,
             jsonEditable: false,
             showMore: false,
+            randomAnswerOptions: false
         }
 
     }
@@ -93,6 +94,11 @@ class Dashboard extends React.Component {
     handleChangeBool = (event, target, localChange = false) => {
         const genState = () => ({ [target]: (event.target.checked) });
         console.log(genState());
+        const randomAnswerOptions = this.props.state.questions.filter(q => q.answers.length <= 1);
+        if (event.target.checked && randomAnswerOptions.length <= 1) {
+            M.toast({ html: '一問一答形式の問題が2つ以上必要です．' });
+            return;
+        }
         //(localChange ? this.setState : this.props.accessor)();
         if (localChange) {
             this.setState(genState());
@@ -226,11 +232,13 @@ class Dashboard extends React.Component {
             isYamlValid: true,
             yaml: yamlData,
         });
-        const questions = this.generateQuestions(yamlData)
+        const questions = this.generateQuestions(yamlData);
+        const nonOptionQuestions = questions.filter(q => q.answers.length <= 1);
         this.props.accessor({
             questions,
             startPos: 1,
-            endPos: questions.length
+            endPos: questions.length,
+            maxOptionNumber: nonOptionQuestions.length < 4 ? nonOptionQuestions.length : 4
         })
         //console.log(this.generateQuestions(yamlData))
         this.generateJson({
@@ -332,7 +340,10 @@ class Dashboard extends React.Component {
                     {props.title}
                 </Col>
             </Row>
-        </Col>)
+        </Col>);
+
+        const nonOptionQuestions = this.props.state.questions.filter(q => q.answers.length <= 1);
+
         return (
             <Section className="no-pad-bot" id="index-banner" >
                 {this.props.state === undefined ? <NotFound /> : <Container>
@@ -399,7 +410,43 @@ class Dashboard extends React.Component {
                                 onLabel=""
                                 title="記述式は自己採点する"
                             />
+                            <SwitchTemp
+                                id="random-answer-options-switch"
+                                offLabel=""
+                                checked={this.props.state.randomAnswerOptions}
+                                onChange={(e) => this.handleChangeBool(e, "randomAnswerOptions")}
+                                onLabel=""
+                                title="すべて選択式の問題にする"
+                            />
                         </Row>
+                        {this.props.state.randomAnswerOptions && (<Row>
+                            <Col s={12} m={6}>
+                                <Row>
+                                    <Col s={6}>
+                                        <h5>選択肢の数</h5>
+                                        <p>選択肢自動生成時の選択肢の数</p>
+                                    </Col>
+                                    <Col s={6} className="right-align">
+                                        <h5>{this.props.state.maxOptionNumber}</h5>
+                                    </Col>
+                                </Row>
+                                {nonOptionQuestions.length > 2 && <p class="range-field">
+                                    <input
+                                        type="range"
+                                        max={nonOptionQuestions.length}
+                                        min={2}
+                                        name="points"
+                                        id="start-pos"
+                                        step={1}
+                                        value={this.props.state.maxOptionNumber}
+                                        onChange={e => {
+                                            this.handleChangeNumber(e, "maxOptionNumber");
+                                        }}
+                                        disabled={nonOptionQuestions.length <= 2}
+                                    />
+                                </p>}
+                            </Col>
+                        </Row>)}
                         <Row>
                             {!this.props.state.shuffleQuestions && (<Col s={12} m={6}>
                                 <Row>
